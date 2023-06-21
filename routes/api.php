@@ -18,5 +18,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login'])->middleware('header');
-Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware(['header','token']);
+// Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login'])->middleware('header');
+Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login']);
+Route::post('/logouts', [App\Http\Controllers\AuthController::class, 'logout'])->middleware(['header','token']);
+Route::post('/authUser', [App\Http\Controllers\UserController::class, 'getAuthUser'])->middleware(['header','token']);

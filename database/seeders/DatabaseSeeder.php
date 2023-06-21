@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,7 +24,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Pandu',
             'email' => 'pandu@gmail.com',
             'password' => bcrypt('123'),
-            'deleted' => false
+            'deleted' => false,
+            'no_handphone' => '081112223211',
+            'tgl_lahir' => Carbon::parse('2002-08-14'),
         ]);
     }
 }

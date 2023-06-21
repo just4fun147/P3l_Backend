@@ -37,6 +37,7 @@ class UserSystemInfoHelper
   		$os_platform = "Unknown OS Platform";
   		$os_array = array(
   			'/windows nt 10/i'  => 'Windows 10',
+  			'/windows 10/i'  => 'Windows 10',
   			'/windows nt 6.3/i'  => 'Windows 8.1',
   			'/windows nt 6.2/i'  => 'Windows 8',
   			'/windows nt 6.1/i'  => 'Windows 7',

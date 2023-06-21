@@ -75,7 +75,8 @@ class AuthController extends Controller
                 'OUT_MESS' => 'Login Success!',
                 'OUT_DATA' => [
                     'token' => $token,
-                    'type' => 'Bearer'
+                    'type' => 'Bearer',
+                    'name' => $user->name
                 ]
                 ),200)->header(
                 'Content-Type','application/json'
