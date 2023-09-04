@@ -91,7 +91,7 @@ class UserController extends Controller
          );
     }
 
-    public function edit(Request $request){
+    public function editProfile(Request $request){
         $user = $this->checkToken($request->bearerToken());
         $u = User::find($user->id);
 
@@ -138,6 +138,70 @@ class UserController extends Controller
         return response()->json(array(
             'OUT_STAT' => 'T',
             'OUT_MESS' => 'Edit Profile Success',
+            'OUT_DATA' => ''
+        ),400)->header(
+            'Content-Type','application/json'
+        );
+    }
+    public function edit(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        
+        $validate = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'id' => ['required','numeric'],
+            'password' => ['nullable'],
+            'name' => ['required'],
+            'tgl_lahir' => ['required'],
+            'no_handphone' => ['required'],
+            'image' => ['nullable']
+        ]);
+        if($validate->fails()){
+            
+            $this->createLog($user->id,'Failed edit user Invalid Request');
+            
+            return response()->json(array(
+                'OUT_STAT' => 'F',
+                'OUT_MESS' => 'Something Went Wrong',
+                'OUT_DATA' => ''
+            ),400)->header(
+                'Content-Type','application/json'
+            );
+        }
+        $u = User::find($request->id);
+        if(!$u || $u->deleted==1){
+            $this->createLog($user->id,'Failed edit user id: '.$request->id.' not found');
+            
+            return response()->json(array(
+                'OUT_STAT' => 'F',
+                'OUT_MESS' => 'Something Went Wrong',
+                'OUT_DATA' => ''
+            ),400)->header(
+                'Content-Type','application/json'
+            );
+        }
+        $u->name = $request->name;
+        $u->email = $request->email;
+        $u->no_handphone = $request->no_handphone;
+        $u->tgl_lahir = $request->tgl_lahir;
+        if(isset($request->password)&& $request->password !=null){
+            $u->password = bcrypt($request->password);
+        }
+        if(isset($request->image)&& $request->image!=null){
+            $path = 'user-images/'.$u->name.'/';
+            $image_parts = explode(";base64,", $request->image);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+                $uniqid = uniqid();
+                $file = $path . $uniqid . '.'.$image_type;
+                Storage::put($file, $image_base64);
+                $u->image = $file;
+        }
+        $u->save();
+        $this->createLog($user->id,'Edit Profile for id : '.$request->id.' Success');
+        return response()->json(array(
+            'OUT_STAT' => 'T',
+            'OUT_MESS' => 'Edit User Success',
             'OUT_DATA' => ''
         ),400)->header(
             'Content-Type','application/json'
