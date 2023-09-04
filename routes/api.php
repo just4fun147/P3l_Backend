@@ -24,3 +24,8 @@ Route::post('/logouts', [App\Http\Controllers\AuthController::class, 'logout'])-
 Route::post('/authUser', [App\Http\Controllers\UserController::class, 'getAuthUser'])->middleware(['header','token']);
 Route::post('/editProfile', [App\Http\Controllers\UserController::class, 'edit'])->middleware(['header','token']);
 Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->middleware(['header']);
+
+
+Route::post('/users', [App\Http\Controllers\UserController::class, 'getUser'])->middleware(['header','token']);
+Route::post('/users/delete', [App\Http\Controllers\UserController::class, 'delete'])->middleware(['header','token']);
+

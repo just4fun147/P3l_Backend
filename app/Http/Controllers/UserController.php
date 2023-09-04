@@ -9,14 +9,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class UserController extends Controller
 {
-    public function getAuthUser(Request $request){
-        $header = $request->bearerToken();
+
+    public function createLog($id, $desc){
+        $l = array(
+            'user_id' => $id,
+            'description' => $desc
+        );
+        ActivityLog::create($l);
+    }
+
+    public function checkToken($bearer){
+        $header = $bearer;
         $t = PersonalAccessToken::findToken($header);
         $user = $t->tokenable;
+        return $user;
+    }
+    public function getAuthUser(Request $request){
+        $user = $this->checkToken($request->bearerToken());
         
         $users = User::join('personal_access_tokens','personal_access_tokens.tokenable_id','=','users.id')
                 ->where('users.id','=',$user['id'])
@@ -24,11 +38,7 @@ class UserController extends Controller
                     'personal_access_tokens.last_used_at AS last_access',
                     'users.*'
                 ]);
-        $log = array(
-            'user_id' => $user['id'],
-            'description' => 'Get Auth User Success ' 
-        );
-        ActivityLog::create($log);
+        $this->createLog($user['id'],'Get Auth User Success');
         return response()->json(array(
             'OUT_STAT' => 'T',
             'OUT_MESS' => 'User Authenticated Success!',
@@ -70,7 +80,8 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'deleted' => 0
         );
-        User::create($temp);
+        $user = User::create($temp);
+        $this->createLog($user['id'],'Register Success');
         return response()->json(array(
             'OUT_STAT' => 'T',
             'OUT_MESS' => 'Register User Success!',
@@ -81,10 +92,8 @@ class UserController extends Controller
     }
 
     public function edit(Request $request){
-        $header = $request->bearerToken();
-        $t = PersonalAccessToken::findToken($header);
-        $u = $t->tokenable;
-        $u = User::find($u->id);
+        $user = $this->checkToken($request->bearerToken());
+        $u = User::find($user->id);
 
         $validate = Validator::make($request->all(), [
             'email' => ['required', 'email'],
@@ -95,10 +104,9 @@ class UserController extends Controller
             'image' => ['nullable']
         ]);
         if($validate->fails()){
-            $log = array(
-                'user_id' => '',
-                'status' => 'Invalid Request',
-            );
+            
+            $this->createLog($u->id,'Failed edit user Invalid Request');
+
             return response()->json(array(
                 'OUT_STAT' => 'F',
                 'OUT_MESS' => 'Something Went Wrong',
@@ -126,11 +134,81 @@ class UserController extends Controller
                 $u->image = $file;
         }
         $u->save();
+        $this->createLog($u->id,'Edit Profile Success');
         return response()->json(array(
             'OUT_STAT' => 'T',
             'OUT_MESS' => 'Edit Profile Success',
             'OUT_DATA' => ''
         ),400)->header(
+            'Content-Type','application/json'
+        );
+    }
+
+    public function getUser(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'id' => ['required', 'numeric']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Failed Get User Invalid Request');
+            return response()->json(array(
+                'OUT_STAT' => 'F',
+                'OUT_MESS' => 'Something Went Wrong',
+                'OUT_DATA' => ''
+            ),400)->header(
+                'Content-Type','application/json'
+            );
+        }
+        $totalData = 0;
+        if($request->id!=0){
+            $users = User::where('id','=',$request->id)->where('deleted','=',0)->get();
+            if($users->count()!=0){
+                $totalData = 1;
+                $this->createLog($user->id,'Get User with id : '.$request->id.' Success');
+            }else{
+                $this->createLog($user->id,'Get User with id : '.$request->id.' Not Found');
+            }
+        }else{
+            $users = User::where('deleted','=',0)->get();
+            $totalData = $users->count();
+            $this->createLog($user->id,'Get All User Success');
+        }
+        return response()->json(array(
+            'OUT_STAT' => 'T',
+            'OUT_MESS' => 'Get User Success',
+            'OUT_DATA' => [
+                'users' => $users,
+                'totalData' => $totalData
+            ]
+        ),200)->header(
+            'Content-Type','application/json'
+        );
+    }
+
+    public function delete(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $users = User::find($request->id);
+        if(!$users){
+            $this->createLog($user->id,'Delete User with id : '.$request->id.' Failed');
+            return response()->json(array(
+                'OUT_STAT' => 'F',
+                'OUT_MESS' => 'Delete User Failed',
+                'OUT_DATA' => ''
+            ),404)->header(
+                'Content-Type','application/json'
+            );
+        }
+        $users->deleted = 1;
+        $users->save();
+        $checkToken = DB::table('personal_access_tokens')->where('tokenable_id','=',$users->id);
+        $checkToken->delete();
+
+        $this->createLog($user->id,'Delete User with id : '.$request->id.' Success');
+        return response()->json(array(
+            'OUT_STAT' => 'T',
+            'OUT_MESS' => 'Delete User Success',
+            'OUT_DATA' => ''
+        ),200)->header(
             'Content-Type','application/json'
         );
     }
