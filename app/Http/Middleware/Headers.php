@@ -20,7 +20,7 @@ class Headers
         $apikey = $request->header('apikey');
         $content = $request->header('Content-Type');
         
-        if ($apikey == '1234567890' && $content == 'application/json') {
+        if ($apikey == '1234567890') {
             return $next($request);
           }
           return response()->json(array(

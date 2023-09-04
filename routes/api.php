@@ -22,3 +22,5 @@ use Illuminate\Support\Facades\Route;
 Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/logouts', [App\Http\Controllers\AuthController::class, 'logout'])->middleware(['header','token']);
 Route::post('/authUser', [App\Http\Controllers\UserController::class, 'getAuthUser'])->middleware(['header','token']);
+Route::post('/editProfile', [App\Http\Controllers\UserController::class, 'edit'])->middleware(['header','token']);
+Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->middleware(['header']);

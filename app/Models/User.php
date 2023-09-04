@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Carbon\Carbon;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class User extends Authenticatable
 {
@@ -57,5 +58,10 @@ class User extends Authenticatable
         if(!is_null($this->attributes['update_at'])){
             return Carbon::parse($this->attributes['update_at'])->format('Y-m-d H:i:s');
         }
+    }
+    public function getUser($token){
+        $t = PersonalAccessToken::findToken($token);
+        $user = $t->tokenable;
+        return $user;
     }
 }

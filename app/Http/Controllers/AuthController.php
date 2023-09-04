@@ -13,15 +13,20 @@ use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
     public function login(Request $request){
-        $h = $request->user_agent;
+        if(isset($request->user_agent)){
+            $h = $request->user_agent;
+            $getbrowser = UserSystemInfoHelper::get_browsers($h);
+            $getdevice = UserSystemInfoHelper::get_device($h);
+            $getos = UserSystemInfoHelper::get_os($h);
+        }else{
+            $getbrowser = "Mobile";
+            $getdevice = "Mobile";
+            $getos = "Mobile";
+        }
         $getip = $request->ip();
-        $getbrowser = UserSystemInfoHelper::get_browsers($h);
-        $getdevice = UserSystemInfoHelper::get_device($h);
-        $getos = UserSystemInfoHelper::get_os($h);
         $validate = Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'user_agent' => ['required']
         ]);
         if($validate->fails()){
             $log = array(
@@ -49,7 +54,7 @@ class AuthController extends Controller
         ]);
         $credentials['deleted'] = false;
         if(Auth::attempt($credentials)){
-            
+            /** @var \App\Models\User $user **/
             $user = Auth::user();
             
             
@@ -104,12 +109,17 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
-        $h = $request->user_agent;
         $getip = $request->ip();
-        $getbrowser = UserSystemInfoHelper::get_browsers($h);
-        $getdevice = UserSystemInfoHelper::get_device($h);
-        $getos = UserSystemInfoHelper::get_os($h);
-
+        if(isset($request->user_agent)){
+            $h = $request->user_agent;
+            $getbrowser = UserSystemInfoHelper::get_browsers($h);
+            $getdevice = UserSystemInfoHelper::get_device($h);
+            $getos = UserSystemInfoHelper::get_os($h);
+        }else{
+            $getbrowser = "Mobile";
+            $getdevice = "Mobile";
+            $getos = "Mobile";
+        }
         $header = $request->bearerToken();
         $t = PersonalAccessToken::findToken($header);
         $user = $t->tokenable;
