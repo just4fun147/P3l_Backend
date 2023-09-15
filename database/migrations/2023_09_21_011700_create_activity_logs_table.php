@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id('id');
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('mst_user')->onDelete('cascade');
             $table->string('description');
             $table->timestamps();
         });

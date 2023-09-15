@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login'])->middleware('header');
+
+
+// AUTH
 Route::post('/logins', [App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/logouts', [App\Http\Controllers\AuthController::class, 'logout'])->middleware(['header','token']);
 Route::post('/authUser', [App\Http\Controllers\UserController::class, 'getAuthUser'])->middleware(['header','token']);
@@ -26,6 +29,7 @@ Route::post('/editProfile', [App\Http\Controllers\UserController::class, 'editPr
 Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->middleware(['header']);
 
 
+// USER
 Route::post('/users', [App\Http\Controllers\UserController::class, 'getUser'])->middleware(['header','token']);
 Route::post('/users/delete', [App\Http\Controllers\UserController::class, 'delete'])->middleware(['header','token']);
 Route::post('/users/edit', [App\Http\Controllers\UserController::class, 'edit'])->middleware(['header','token']);

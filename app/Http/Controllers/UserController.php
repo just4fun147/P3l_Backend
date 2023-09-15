@@ -211,7 +211,8 @@ class UserController extends Controller
     public function getUser(Request $request){
         $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
-            'id' => ['required', 'numeric']
+            'id' => ['required', 'numeric'],
+            'name' => ['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Failed Get User Invalid Request');
@@ -233,7 +234,7 @@ class UserController extends Controller
                 $this->createLog($user->id,'Get User with id : '.$request->id.' Not Found');
             }
         }else{
-            $users = User::where('deleted','=',0)->get();
+            $users = User::where('deleted','=',0)->where('name','like','%'.$request->name.'%')->get();
             $totalData = $users->count();
             $this->createLog($user->id,'Get All User Success');
         }
