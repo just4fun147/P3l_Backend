@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
+    public function baseReponse($status,$mess,$data,$code)
+    {   
+        return response()->json(array(
+            'OUT_STAT' => $status,
+            'OUT_MESS' => $mess,
+            'OUT_DATA' => $data
+            ),$code)->header(
+            'Content-Type','application/json'
+        );
+    }
     public function login(Request $request){
         if(isset($request->user_agent)){
             $h = $request->user_agent;
@@ -38,21 +48,15 @@ class AuthController extends Controller
                 'os' => $getos,
             );
             LoginLog::create($log);
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Something Went Wrong',
-                'OUT_DATA' => ''
-            ),401)->header(
-                'Content-Type','application/json'
-            );
-            
+            return $this->baseReponse('F',$validate->errors()->first(),'',401);
         }
 
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-        $credentials['deleted'] = false;
+        $credentials['is_active'] = true;
+        $credentials['is_group'] = false;
         if(Auth::attempt($credentials)){
             /** @var \App\Models\User $user **/
             $user = Auth::user();
@@ -75,19 +79,7 @@ class AuthController extends Controller
                 'os' => $getos,
             );
             LoginLog::create($log);
-            return response()->json(array(
-                'OUT_STAT' => 'T',
-                'OUT_MESS' => 'Login Success!',
-                'OUT_DATA' => [
-                    'token' => $token,
-                    'type' => 'Bearer',
-                    'name' => $user->name
-                ]
-                ),200)->header(
-                'Content-Type','application/json'
-            );
-            
-            
+            return $this->baseReponse('T','Login Success',['token' => $token, 'type' => 'Beare','name'=>$user->full_name],200);
         }else{
             $log = array(
                 'user_id' => '',
@@ -98,13 +90,7 @@ class AuthController extends Controller
                 'os' => $getos,
             );
             LoginLog::create($log);
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Invalid Email Password',
-                'OUT_DATA' => ''
-            ),401)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F','Invalid Email / Password','',401);
         }
     }
 
@@ -137,13 +123,6 @@ class AuthController extends Controller
             'os' => $getos,
         );
         LoginLog::create($log);
-
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Logout Success!',
-            'OUT_DATA' => ''
-            ),200)->header(
-            'Content-Type','application/json'
-        );
+        return $this->baseReponse('T','Logout Success!','',200);
     }
 }

@@ -16,13 +16,13 @@ return new class extends Migration
             $table->id();
             $table->string('season_name');
             $table->integer('capacity');
-            $table->float('price');
+            $table->double('price',20,0);
             $table->integer('price_type');
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_active');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

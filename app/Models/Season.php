@@ -15,7 +15,7 @@ class Season extends Model
      *
      * @var array<int, string>
      */
-    protected $table = 'mst_add_on';
+    protected $table = 'mst_season';
 
     protected $fillable = [
         'season_name',

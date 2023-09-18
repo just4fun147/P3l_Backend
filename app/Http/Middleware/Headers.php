@@ -24,7 +24,7 @@ class Headers
             return $next($request);
           }
           return response()->json(array(
-            'OUT_STAT' => 'F',
+            'OUT_STAT' => 'Z',
             'OUT_MESS' => 'No Access!',
             'OUT_DATA' => ''
         ),401)->header(

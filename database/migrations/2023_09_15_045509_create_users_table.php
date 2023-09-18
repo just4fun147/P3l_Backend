@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_group');
             $table->foreignId('role_id')->references('id')->on('mst_role');
             $table->string('image')->nullable();
-            $table->string('password')->nullable();
+            $table->string('password');
             $table->boolean('is_active');
             $table->string('created_by');
             $table->string('updated_by')->nullable();

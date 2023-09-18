@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    public function baseResponse($status,$mess,$data,$code)
+    {   
+        return response()->json(array(
+            'OUT_STAT' => $status,
+            'OUT_MESS' => $mess,
+            'OUT_DATA' => $data
+            ),$code)->header(
+            'Content-Type','application/json'
+        );
+    }
 
     public function createLog($id, $desc){
         $l = array(
@@ -32,32 +42,32 @@ class UserController extends Controller
     public function getAuthUser(Request $request){
         $user = $this->checkToken($request->bearerToken());
         
-        $users = User::join('personal_access_tokens','personal_access_tokens.tokenable_id','=','users.id')
-                ->where('users.id','=',$user['id'])
+        $users = User::join('personal_access_tokens','personal_access_tokens.tokenable_id','=','mst_user.id')
+                ->where('mst_user.id','=',$user['id'])
                 ->get([
                     'personal_access_tokens.last_used_at AS last_access',
-                    'users.*'
+                    'mst_user.*'
                 ]);
         $this->createLog($user['id'],'Get Auth User Success');
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'User Authenticated Success!',
-            'OUT_DATA' => $users
-        ),200)->header(
-            'Content-Type','application/json'
-         );
-            
+        return $this->baseReponse('T','User Authenticated Success!',$users,200);
     }
 
     public function register(Request $request){
         $validate = Validator::make($request->all(), [
             'email' => ['required', 'email'],
-            'password' => ['required'],
-            'name' => ['required'],
-            'tgl_lahir' => ['required'],
-            'no_handphone' => ['required'],
-            'image' => ['nullable']
+            'password' => ['nullable'],
+            'full_name' => ['required'],
+            'identity' => ['required'],
+            'phone_number' => ['required'],
+            'address' => ['required'],
+            'image' => ['nullable'],
+            'is_group' => ['required'],
+            'role' => ['required']
         ]);
+        if($validate->fails()){
+            $this->createLog(1,'Register Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+        }
         if(isset($request->image)&& $request->image!=null){
             $path = 'user-images/'.$request->name.'/';
             $image_parts = explode(";base64,", $request->image);
@@ -73,22 +83,20 @@ class UserController extends Controller
         }
         $temp = array(
             'email' => $request->email,
-            'name' => $request->name,
-            'tgl_lahir' => $request->tgl_lahir,
-            'no_handphone' => $request->no_handphone,
+            'full_name' => $request->full_name,
+            'identity' => $request->identity,
+            'address' => $request->address,
+            'is_group' => $request->is_group,
+            'phone_number' => $request->phone_number,
             'image' => $image,
             'password' => bcrypt($request->password),
-            'deleted' => 0
+            'is_active' => 1,
+            'role_id' => $request->role,
+            'created_by' => $request->full_name
         );
         $user = User::create($temp);
         $this->createLog($user['id'],'Register Success');
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Register User Success!',
-            'OUT_DATA' => ''
-        ),200)->header(
-            'Content-Type','application/json'
-         );
+        return $this->baseReponse('T','Register User Success!','', 200);
     }
 
     public function editProfile(Request $request){
@@ -98,27 +106,22 @@ class UserController extends Controller
         $validate = Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'password' => ['nullable'],
-            'name' => ['required'],
-            'tgl_lahir' => ['required'],
-            'no_handphone' => ['required'],
+            'full_name' => ['required'],
+            'identity' => ['required'],
+            'phone_number' => ['required'],
+            'address' => ['required'],
             'image' => ['nullable']
         ]);
         if($validate->fails()){
             
             $this->createLog($u->id,'Failed edit user Invalid Request');
-
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Something Went Wrong',
-                'OUT_DATA' => ''
-            ),400)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
-        $u->name = $request->name;
+        $u->full_name = $request->full_name;
         $u->email = $request->email;
-        $u->no_handphone = $request->no_handphone;
-        $u->tgl_lahir = $request->tgl_lahir;
+        $u->phone_number = $request->phone_number;
+        $u->identity = $request->identity;
+        $u->address = $request->address;
         if(isset($request->password)&& $request->password !=null){
             $u->password = bcrypt($request->password);
         }
@@ -135,54 +138,36 @@ class UserController extends Controller
         }
         $u->save();
         $this->createLog($u->id,'Edit Profile Success');
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Edit Profile Success',
-            'OUT_DATA' => ''
-        ),400)->header(
-            'Content-Type','application/json'
-        );
+        return $this->baseReponse('T','Edit Profile Success','', 200);
     }
     public function edit(Request $request){
         $user = $this->checkToken($request->bearerToken());
         
         $validate = Validator::make($request->all(), [
-            'email' => ['required', 'email'],
             'id' => ['required','numeric'],
+            'email' => ['required', 'email'],
             'password' => ['nullable'],
-            'name' => ['required'],
-            'tgl_lahir' => ['required'],
-            'no_handphone' => ['required'],
+            'full_name' => ['required'],
+            'identity' => ['required'],
+            'phone_number' => ['required'],
+            'address' => ['required'],
             'image' => ['nullable']
         ]);
         if($validate->fails()){
             
             $this->createLog($user->id,'Failed edit user Invalid Request');
-            
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Something Went Wrong',
-                'OUT_DATA' => ''
-            ),400)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $u = User::find($request->id);
-        if(!$u || $u->deleted==1){
+        if(!$u || $u->is_active==0){
             $this->createLog($user->id,'Failed edit user id: '.$request->id.' not found');
-            
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Something Went Wrong',
-                'OUT_DATA' => ''
-            ),400)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F','Something Went Wrong','', 400);
         }
-        $u->name = $request->name;
+        $u->full_name = $request->full_name;
         $u->email = $request->email;
-        $u->no_handphone = $request->no_handphone;
-        $u->tgl_lahir = $request->tgl_lahir;
+        $u->phone_number = $request->phone_number;
+        $u->identity = $request->identity;
+        $u->address = $request->address;
         if(isset($request->password)&& $request->password !=null){
             $u->password = bcrypt($request->password);
         }
@@ -199,13 +184,7 @@ class UserController extends Controller
         }
         $u->save();
         $this->createLog($user->id,'Edit Profile for id : '.$request->id.' Success');
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Edit User Success',
-            'OUT_DATA' => ''
-        ),400)->header(
-            'Content-Type','application/json'
-        );
+        return $this->baseReponse('T','Edit User Success','', 200);
     }
 
     public function getUser(Request $request){
@@ -216,17 +195,11 @@ class UserController extends Controller
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Failed Get User Invalid Request');
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Something Went Wrong',
-                'OUT_DATA' => ''
-            ),400)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $totalData = 0;
         if($request->id!=0){
-            $users = User::where('id','=',$request->id)->where('deleted','=',0)->get();
+            $users = User::where('id','=',$request->id)->where('is_active','=',1)->get();
             if($users->count()!=0){
                 $totalData = 1;
                 $this->createLog($user->id,'Get User with id : '.$request->id.' Success');
@@ -234,20 +207,11 @@ class UserController extends Controller
                 $this->createLog($user->id,'Get User with id : '.$request->id.' Not Found');
             }
         }else{
-            $users = User::where('deleted','=',0)->where('name','like','%'.$request->name.'%')->get();
+            $users = User::where('is_active','=',1)->where('full_name','like','%'.$request->name.'%')->get();
             $totalData = $users->count();
             $this->createLog($user->id,'Get All User Success');
         }
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Get User Success',
-            'OUT_DATA' => [
-                'users' => $users,
-                'totalData' => $totalData
-            ]
-        ),200)->header(
-            'Content-Type','application/json'
-        );
+        return $this->baseReponse('T','Get User Success','', 200);
     }
 
     public function delete(Request $request){
@@ -255,26 +219,14 @@ class UserController extends Controller
         $users = User::find($request->id);
         if(!$users){
             $this->createLog($user->id,'Delete User with id : '.$request->id.' Failed');
-            return response()->json(array(
-                'OUT_STAT' => 'F',
-                'OUT_MESS' => 'Delete User Failed',
-                'OUT_DATA' => ''
-            ),404)->header(
-                'Content-Type','application/json'
-            );
+            return $this->baseReponse('F','Delete User Failed','', 404);
         }
-        $users->deleted = 1;
+        $users->is_active = 0;
         $users->save();
         $checkToken = DB::table('personal_access_tokens')->where('tokenable_id','=',$users->id);
         $checkToken->delete();
 
         $this->createLog($user->id,'Delete User with id : '.$request->id.' Success');
-        return response()->json(array(
-            'OUT_STAT' => 'T',
-            'OUT_MESS' => 'Delete User Success',
-            'OUT_DATA' => ''
-        ),200)->header(
-            'Content-Type','application/json'
-        );
+        return $this->baseReponse('T','Delete User Success','', 200);
     }
 }

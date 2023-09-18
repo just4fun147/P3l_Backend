@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('mst_room_type', function (Blueprint $table) {
             $table->id();
             $table->string('type_name');
-            $table->float('price');
-            $table->string('desc');
+            $table->double('price',20,0);
+            $table->text('desc');
             $table->boolean('is_active');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }
