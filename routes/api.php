@@ -58,4 +58,10 @@ Route::post('/coupons/create', [App\Http\Controllers\CouponController::class, 's
 Route::post('/coupons/edit', [App\Http\Controllers\CouponController::class, 'edit'])->middleware(['header','token']);
 Route::post('/coupons/delete', [App\Http\Controllers\CouponController::class, 'delete'])->middleware(['header','token']);
 
+// Add On
+Route::post('/add-on', [App\Http\Controllers\AddonController::class, 'index'])->middleware(['header','token']);
+Route::post('/add-on/create', [App\Http\Controllers\AddonController::class, 'store'])->middleware(['header','token']);
+Route::post('/add-on/edit', [App\Http\Controllers\AddonController::class, 'edit'])->middleware(['header','token']);
+Route::post('/add-on/delete', [App\Http\Controllers\AddonController::class, 'delete'])->middleware(['header','token']);
+
 

@@ -108,7 +108,7 @@ class CouponController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         $coupon = Coupon::find($request->id);
-        if(!$coupon||$coupon->is_active=0){
+        if(!$coupon||$coupon->is_active==0){
             $this->createLog($user->id,'Delete Coupon Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }

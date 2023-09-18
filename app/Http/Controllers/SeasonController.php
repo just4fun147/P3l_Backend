@@ -102,7 +102,7 @@ class SeasonController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         $season = Season::find($request->id);
-        if(!$season||$season->is_active=0){
+        if(!$season||$season->is_active==0){
             $this->createLog($user->id,'Delete Season Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }

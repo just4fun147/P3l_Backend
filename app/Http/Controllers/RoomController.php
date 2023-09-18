@@ -95,7 +95,7 @@ class RoomController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         $room = RoomType::find($request->id);
-        if(!$room||$room->is_active=0){
+        if(!$room||$room->is_active==0){
             $this->createLog($user->id,'Delete Room Type Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }
@@ -193,7 +193,7 @@ class RoomController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         $room = Room::find($request->id);
-        if(!$room||$room->is_active=0){
+        if(!$room||$room->is_active==0){
             $this->createLog($user->id,'Delete Room Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }
