@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DetailReservation extends Model
+class SeasonDetail extends Model
 {
     use HasFactory;
 
@@ -15,15 +15,13 @@ class DetailReservation extends Model
      *
      * @var array<int, string>
      */
-    protected $table = 'trn_detail_reservation';
+    protected $table = 'mst_season_detail';
 
     protected $fillable = [
         'id',
-        'reservation_id',
-        'room_id',
-        'coupon_id',
-        'actual_price',
         'season_id',
+        'room_type_id',
+        'price',
         'is_active',
         'created_by',
         'updated_by'

@@ -18,6 +18,7 @@ class Addon extends Model
     protected $table = 'mst_add_on';
 
     protected $fillable = [
+        'id',
         'add_on_name',
         'price',
         'is_active',

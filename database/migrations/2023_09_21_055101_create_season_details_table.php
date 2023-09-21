@@ -12,16 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_user', function (Blueprint $table) {
-            $table->id('id');
-            $table->string('full_name');
-            $table->string('identity');
-            $table->string('phone_number');
-            $table->string('email');
-            $table->text('address');
-            $table->foreignId('role_id')->references('id')->on('mst_role');
-            $table->string('image')->nullable();
-            $table->string('password');
+        Schema::create('mst_season_detail', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('season_id')->references('id')->on('mst_season');
+            $table->foreignId('room_type_id')->references('id')->on('mst_room_type');
+            $table->double('price',20,0);
             $table->boolean('is_active');
             $table->string('created_by');
             $table->string('updated_by')->nullable();
@@ -35,7 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::dropIfExists('mst_user');
+        Schema::dropIfExists('mst_season_detail');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 };

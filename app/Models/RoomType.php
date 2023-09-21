@@ -18,9 +18,11 @@ class RoomType extends Model
     protected $table = 'mst_room_type';
 
     protected $fillable = [
+        'id',
         'type_name',
         'price',
-        'desc',
+        'is_smoking',
+        'is_double',
         'is_active',
         'created_by',
         'updated_by'

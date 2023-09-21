@@ -18,6 +18,7 @@ class Coupon extends Model
     protected $table = 'mst_coupon';
 
     protected $fillable = [
+        'id',
         'code',
         'coupon_name',
         'capacity',

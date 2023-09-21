@@ -18,6 +18,7 @@ class Role extends Model
     protected $table = 'mst_role';
 
     protected $fillable = [
+        'id',
         'role_name',
         'is_active',
         'created_by',

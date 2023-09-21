@@ -18,6 +18,7 @@ class Reservation extends Model
     protected $table = 'mst_group';
 
     protected $fillable = [
+        'id',
         'invoice_number',
         'user_id',
         'start_date',

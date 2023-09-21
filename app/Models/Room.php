@@ -18,6 +18,7 @@ class Room extends Model
     protected $table = 'mst_room';
 
     protected $fillable = [
+        'id',
         'type_id',
         'room_number',
         'is_active',
@@ -36,5 +37,13 @@ class Room extends Model
         if(!is_null($this->attributes['update_at'])){
             return Carbon::parse($this->attributes['update_at'])->format('Y-m-d H:i:s');
         }
+    }
+
+    public function getTotalRoomByType($id){
+        return Room::where('room_type_id','=',$id)->get();
+    }
+
+    public function getAvailableRoom($start, $end){
+        
     }
 }

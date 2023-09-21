@@ -18,9 +18,9 @@ class Season extends Model
     protected $table = 'mst_season';
 
     protected $fillable = [
+        'id',
         'season_name',
         'capacity',
-        'price',
         'price_type',
         'start_date',
         'end_date',

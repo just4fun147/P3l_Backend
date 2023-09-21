@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('trn_reservation', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_number');
+            $table->string('invoice_number')->nullable();
+            $table->string('id_booking');
             $table->foreignId('user_id')->references('id')->on('mst_user');
             $table->date('start_date');
             $table->date('end_date');

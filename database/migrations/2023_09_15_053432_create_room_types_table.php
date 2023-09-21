@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('type_name');
             $table->double('price',20,0);
-            $table->text('desc');
+            $table->boolean('is_smoking');
+            $table->boolean('is_double');
             $table->boolean('is_active');
             $table->string('created_by');
             $table->string('updated_by')->nullable();

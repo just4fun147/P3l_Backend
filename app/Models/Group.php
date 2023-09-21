@@ -18,6 +18,7 @@ class Group extends Model
     protected $table = 'mst_group';
 
     protected $fillable = [
+        'id',
         'group_name',
         'user_id',
         'pic_id',

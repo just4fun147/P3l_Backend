@@ -18,6 +18,7 @@ class Extend extends Model
     protected $table = 'mst_extend';
 
     protected $fillable = [
+        'id',
         'reservation_id',
         'start_date',
         'end_date',

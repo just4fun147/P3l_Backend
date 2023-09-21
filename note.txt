@@ -1,0 +1,60 @@
+price_type_season : 
+    1 = %
+    2 = -
+    3 ==
+price_type_coupon : 
+    1 = %
+    2 = -
+    3(SUPERIOR) ==
+    4(DOUBLEDELUXE) ==
+    4(EXECUTIVEDELUXE) ==
+    5(JUNIORSUITE) ==
+
+room_type:
+    250.000
+    1 = SUPERIOR SMOKE DOUBLE
+    2 = SUPERIOR NON DOUBLE
+    3 = SUPERIOR SMOKE TWIN
+    4 = DOUBLEDELUXE NON TWIN
+
+    350.000
+    5 = DOUBLEDELUXE SMOKE DOUBLE
+    6 = DOUBLEDELUXE NON DOUBLE
+    7 = DOUBLEDELUXE SMOKE TWIN
+    8 = DOUBLEDELUXE NON TWIN
+    
+    700.000
+    9 = EXECUTIVEDELUXE SMOKE KING
+    10 = EXECUTIVEDELUXE NON KING
+
+    1.200.000
+    11 = JUNIORSUITE SMOKE KING
+    12 = JUNIORSUITE NON TWIN
+
+Role :
+    1. Admin
+    2. Owner -> 3
+    3. Sales Manager -> 4
+    4. General Manager -> 5
+    5. Front Office
+    6. End User -> 6 - 15
+    7. Group -> 16 -18
+
+Requirement:
+1. Season dapat dibuat max h-60 hari
+2. grup dibayar max h-7
+3. grup nota reservasinya melalui email dalam bentuk PDF setelah lunas.
+
+v Addon
+v Coupon
+v Group
+v Role
+v Room
+v RoomType
+v Season
+v SeasonDetail
+v User
+Reservation
+DetailReservation
+Extend
+Facility

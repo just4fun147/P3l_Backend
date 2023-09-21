@@ -15,8 +15,7 @@ return new class extends Migration
         Schema::create('mst_season', function (Blueprint $table) {
             $table->id();
             $table->string('season_name');
-            $table->integer('capacity');
-            $table->double('price',20,0);
+            $table->integer('capacity')->nullable();
             $table->integer('price_type');
             $table->date('start_date');
             $table->date('end_date');

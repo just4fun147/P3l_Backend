@@ -18,6 +18,7 @@ class Facility extends Model
     protected $table = 'trn_add_on';
 
     protected $fillable = [
+        'id',
         'reservation_id',
         'add_on_id',
         'is_charge',

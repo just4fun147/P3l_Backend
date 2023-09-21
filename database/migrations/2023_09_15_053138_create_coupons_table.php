@@ -16,11 +16,12 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->string('coupon_name');
+            $table->text('desc');
             $table->integer('capacity');
             $table->double('price',20,0);
             $table->integer('price_type');
-            $table->double('min_price',20,0);
-            $table->double('max_discount',20,0);
+            $table->double('min_price',20,0)->nullable();
+            $table->double('max_discount',20,0)->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_active');
