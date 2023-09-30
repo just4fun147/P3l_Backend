@@ -13,24 +13,24 @@ price cal :
     normal - season - coupon
 room_type:
     250.000 
-    1 = SUPERIOR SMOKE DOUBLE ( 1 - 10)
-    2 = SUPERIOR NON DOUBLE ( 11 - 20)
-    3 = SUPERIOR SMOKE TWIN ( 21 - 30)
-    4 = SUPERIOR NON TWIN ( 31 - 40)
+    1 = SUPERIOR SMOKE DOUBLE ( 1 - 10) { 3a4ee373-00e6-4e18-ad67-be32fb7beed9 }
+    2 = SUPERIOR NON DOUBLE ( 11 - 20) { d449f021-ead8-4607-9da9-82e22d2632f9 }
+    3 = SUPERIOR SMOKE TWIN ( 21 - 30) { e37957e3-23fb-45dd-be3e-3085e5a8ea53 }
+    4 = SUPERIOR NON TWIN ( 31 - 40) { 21e297be-fbdd-4099-9502-f05d44aaaf38 }
 
     350.000 
-    5 = DOUBLEDELUXE SMOKE DOUBLE ( 41 - 50)
-    6 = DOUBLEDELUXE NON DOUBLE ( 51 - 60)
-    7 = DOUBLEDELUXE SMOKE TWIN ( 61 - 70)
-    8 = DOUBLEDELUXE NON TWIN ( 71 - 80)
+    5 = DOUBLEDELUXE SMOKE DOUBLE ( 41 - 50) { 9684e2e9-3afc-45f6-8982-8d42d1c0b016 }
+    6 = DOUBLEDELUXE NON DOUBLE ( 51 - 60) { ee70ad0a-9172-4729-8415-86d7f437c429 }
+    7 = DOUBLEDELUXE SMOKE TWIN ( 61 - 70) { 1d7ce0ce-ebd1-432f-bd0d-ac0f1deeeda4 }
+    8 = DOUBLEDELUXE NON TWIN ( 71 - 80) { 5b742c9c-61e0-4a8c-9015-16224eb2fc00 }
     
     700.000 
-    9 = EXECUTIVEDELUXE SMOKE KING ( 81 -85)
-    10 = EXECUTIVEDELUXE NON KING ( 86 - 90)
+    9 = EXECUTIVEDELUXE SMOKE KING ( 81 -85) { 577820c5-b173-4448-a4e0-011ec4478ae7 }
+    10 = EXECUTIVEDELUXE NON KING ( 86 - 90) { 5aa42ffe-d15b-41bb-91c3-230c41091979 }
 
     1.200.000
-    11 = JUNIORSUITE SMOKE KING ( 91 - 93)
-    12 = JUNIORSUITE NON TWIN ( 94 - 96)
+    11 = JUNIORSUITE SMOKE KING ( 91 - 93) { db2b33dc-fc6c-4368-b086-c7809c6bbed3 }
+    12 = JUNIORSUITE NON TWIN ( 94 - 96) { 58b11c28-e966-40ad-8105-a95d7bed7dc5 }
 ADDON:
     1. ekstra bed 100000
     2. laundry 12500
@@ -43,17 +43,17 @@ SEASON:
     3. Lebaran 2022 -> == ( 20-05 ; 02-06)
     4. Libur Kenaikan kelas 2022 -> - 30000 (16-06 ; 01-07)
 Role :
-    1. Admin
+    1. Admin ( b06cc025-1db1-4024-b408-71aa463bf701 )
         Bimo
-    2. Owner -> 3
+    2. Owner -> 3 ( 4c8ad9bf-3168-4c16-ad64-dc0cfab73dc7 )
         Eddo
-    3. Sales Manager -> 4
+    3. Sales Manager -> 4 ( aed061cd-164c-45c1-bc77-1b1a1304d081 )
         Budi
-    4. General Manager -> 5
+    4. General Manager -> 5 ( 5616fc68-f5a3-4ce2-bfc5-a6d4f3cc6526 )
         Sansa
-    5. Front Office -> 2
+    5. Front Office -> 2 ( d61a7fd9-75f4-4fd8-9e35-457e534c4296 )
         Arum
-    6. End User -> 6 - 15
+    6. End User -> 6 - 15 ( 865fd661-ca01-44f6-866d-b44773740791 )
         6. Pandu 5
         7. Bambang 4
         8. Thara 3
@@ -64,7 +64,7 @@ Role :
         13. Gibran
         14. Bona
         15. Vincen
-    7. Group -> 16 -18
+    7. Group -> 16 -18 ( 97b00fe5-8123-40e4-bf39-3bb347cf3a5a )
         16. Ica
             Tadika Mesra Agency
         17. Kevin

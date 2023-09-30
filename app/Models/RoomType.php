@@ -21,6 +21,7 @@ class RoomType extends Model
         'id',
         'type_name',
         'price',
+        'uuid',
         'is_smoking',
         'is_double',
         'is_active',

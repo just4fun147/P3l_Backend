@@ -31,42 +31,49 @@ class DatabaseSeeder extends Seeder
         Role::create([
             'id' =>1,
             'role_name' => 'Admin',
+            'uuid' => 'b06cc025-1db1-4024-b408-71aa463bf701',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>2,
             'role_name' => 'Owner',
+            'uuid' => '4c8ad9bf-3168-4c16-ad64-dc0cfab73dc7',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>3,
             'role_name' => 'Sales Manager',
+            'uuid' => 'aed061cd-164c-45c1-bc77-1b1a1304d081',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>4,
             'role_name' => 'General Manager',
+            'uuid' => '5616fc68-f5a3-4ce2-bfc5-a6d4f3cc6526',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>5,
             'role_name' => 'Front Office',
+            'uuid' => 'd61a7fd9-75f4-4fd8-9e35-457e534c4296',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>6,
             'role_name' => 'End User',
+            'uuid' => '865fd661-ca01-44f6-866d-b44773740791',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
         Role::create([
             'id' =>7,
             'role_name' => 'End User Group',
+            'uuid' => '97b00fe5-8123-40e4-bf39-3bb347cf3a5a',
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
@@ -77,6 +84,7 @@ class DatabaseSeeder extends Seeder
         RoomType::create([
             'id' => 1,
             'type_name' =>'Superior',
+            'uuid' =>'3a4ee373-00e6-4e18-ad67-be32fb7beed9',
             'price' => 250000,
             'is_smoking' => true,
             'is_double' => true,
@@ -157,6 +165,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'type_name' =>'Superior',
             'price' => 250000,
+            'uuid' =>'d449f021-ead8-4607-9da9-82e22d2632f9',
             'is_smoking' => false,
             'is_double' => true,
             'is_active' => true,
@@ -236,6 +245,7 @@ class DatabaseSeeder extends Seeder
             'id' => 3,
             'type_name' =>'Superior',
             'price' => 250000,
+            'uuid' =>'e37957e3-23fb-45dd-be3e-3085e5a8ea53',
             'is_smoking' => true,
             'is_double' => false,
             'is_active' => true,
@@ -315,6 +325,7 @@ class DatabaseSeeder extends Seeder
             'id' => 4,
             'type_name' =>'Superior',
             'price' => 250000,
+            'uuid' =>'21e297be-fbdd-4099-9502-f05d44aaaf38',
             'is_smoking' => false,
             'is_double' => false,
             'is_active' => true,
@@ -395,6 +406,7 @@ class DatabaseSeeder extends Seeder
             'id' => 5,
             'type_name' =>'Double Deluxe',
             'price' => 350000,
+            'uuid' =>'9684e2e9-3afc-45f6-8982-8d42d1c0b016',
             'is_smoking' => true,
             'is_double' => true,
             'is_active' => true,
@@ -475,6 +487,7 @@ class DatabaseSeeder extends Seeder
             'id' => 6,
             'type_name' =>'Double Deluxe',
             'price' => 350000,
+            'uuid' =>'ee70ad0a-9172-4729-8415-86d7f437c429',
             'is_smoking' => false,
             'is_double' => true,
             'is_active' => true,
@@ -555,18 +568,19 @@ class DatabaseSeeder extends Seeder
             'id' => 7,
             'type_name' =>'Double Deluxe',
             'price' => 350000,
+            'uuid' =>'1d7ce0ce-ebd1-432f-bd0d-ac0f1deeeda4',
             'is_smoking' => true,
             'is_double' => false,
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
-        Room::create([
-            'id'=>61,
-            'type_id' =>7,
-            'room_number'=>'G001',
-            'is_active' => true,
-            'created_by' => 'Pandu'
-        ]);
+            Room::create([
+                'id'=>61,
+                'type_id' =>7,
+                'room_number'=>'G001',
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
             Room::create([
                 'id'=>62,
                 'type_id' =>7,
@@ -635,6 +649,7 @@ class DatabaseSeeder extends Seeder
             'id' => 8,
             'type_name' =>'Double Deluxe',
             'price' => 350000,
+            'uuid' =>'5b742c9c-61e0-4a8c-9015-16224eb2fc00',
             'is_smoking' => false,
             'is_double' => false,
             'is_active' => true,
@@ -715,6 +730,7 @@ class DatabaseSeeder extends Seeder
             'id' => 9,
             'type_name' =>'Executive Deluxe',
             'price' => 700000,
+            'uuid' =>'577820c5-b173-4448-a4e0-011ec4478ae7',
             'is_smoking' => true,
             'is_double' => false,
             'is_active' => true,
@@ -759,6 +775,7 @@ class DatabaseSeeder extends Seeder
             'id' => 10,
             'type_name' =>'Executive Deluxe',
             'price' => 700000,
+            'uuid' =>'5aa42ffe-d15b-41bb-91c3-230c41091979',
             'is_smoking' => false,
             'is_double' => false,
             'is_active' => true,
@@ -804,6 +821,7 @@ class DatabaseSeeder extends Seeder
             'id' => 11,
             'type_name' =>'Junior Suite',
             'price' => 1200000,
+            'uuid' =>'db2b33dc-fc6c-4368-b086-c7809c6bbed3',
             'is_smoking' => true,
             'is_double' => false,
             'is_active' => true,
@@ -835,6 +853,7 @@ class DatabaseSeeder extends Seeder
             'id' => 12,
             'type_name' =>'Junior Suite',
             'price' => 700000,
+            'uuid' =>'58b11c28-e966-40ad-8105-a95d7bed7dc5',
             'is_smoking' => false,
             'is_double' => false,
             'is_active' => true,

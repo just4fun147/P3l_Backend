@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('mst_room_type', function (Blueprint $table) {
             $table->id();
             $table->string('type_name');
+            $table->uuid('uuid');
             $table->double('price',20,0);
             $table->boolean('is_smoking');
             $table->boolean('is_double');
