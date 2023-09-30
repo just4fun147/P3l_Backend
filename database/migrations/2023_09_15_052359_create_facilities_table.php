@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreignId('reservation_id')->references('id')->on('trn_reservation');
             $table->foreignId('add_on_id')->references('id')->on('mst_add_on');
             $table->boolean('is_charge');
+            $table->integer('quantity');
             $table->boolean('is_active');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

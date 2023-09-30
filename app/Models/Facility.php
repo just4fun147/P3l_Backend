@@ -21,6 +21,7 @@ class Facility extends Model
         'id',
         'reservation_id',
         'add_on_id',
+        'quantity',
         'is_charge',
         'is_active',
         'created_by',

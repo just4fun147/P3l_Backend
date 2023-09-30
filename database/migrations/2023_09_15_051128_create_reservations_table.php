@@ -14,11 +14,13 @@ return new class extends Migration
     {
         Schema::create('trn_reservation', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_number')->nullable();
-            $table->string('id_booking');
+            $table->string('invoice_number')->nullable()->unique();
+            $table->string('id_booking')->unique();
             $table->foreignId('user_id')->references('id')->on('mst_user');
             $table->date('start_date');
             $table->date('end_date');
+            $table->integer('adult');
+            $table->integer('child');
             $table->boolean('is_paid');
             $table->boolean('is_extend');
             $table->boolean('is_active');

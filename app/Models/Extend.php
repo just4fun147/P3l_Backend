@@ -15,7 +15,7 @@ class Extend extends Model
      *
      * @var array<int, string>
      */
-    protected $table = 'mst_extend';
+    protected $table = 'trn_extend';
 
     protected $fillable = [
         'id',

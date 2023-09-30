@@ -9,36 +9,74 @@ price_type_coupon :
     4(DOUBLEDELUXE) ==
     4(EXECUTIVEDELUXE) ==
     5(JUNIORSUITE) ==
-
+price cal : 
+    normal - season - coupon
 room_type:
-    250.000
-    1 = SUPERIOR SMOKE DOUBLE
-    2 = SUPERIOR NON DOUBLE
-    3 = SUPERIOR SMOKE TWIN
-    4 = DOUBLEDELUXE NON TWIN
+    250.000 
+    1 = SUPERIOR SMOKE DOUBLE ( 1 - 10)
+    2 = SUPERIOR NON DOUBLE ( 11 - 20)
+    3 = SUPERIOR SMOKE TWIN ( 21 - 30)
+    4 = SUPERIOR NON TWIN ( 31 - 40)
 
-    350.000
-    5 = DOUBLEDELUXE SMOKE DOUBLE
-    6 = DOUBLEDELUXE NON DOUBLE
-    7 = DOUBLEDELUXE SMOKE TWIN
-    8 = DOUBLEDELUXE NON TWIN
+    350.000 
+    5 = DOUBLEDELUXE SMOKE DOUBLE ( 41 - 50)
+    6 = DOUBLEDELUXE NON DOUBLE ( 51 - 60)
+    7 = DOUBLEDELUXE SMOKE TWIN ( 61 - 70)
+    8 = DOUBLEDELUXE NON TWIN ( 71 - 80)
     
-    700.000
-    9 = EXECUTIVEDELUXE SMOKE KING
-    10 = EXECUTIVEDELUXE NON KING
+    700.000 
+    9 = EXECUTIVEDELUXE SMOKE KING ( 81 -85)
+    10 = EXECUTIVEDELUXE NON KING ( 86 - 90)
 
     1.200.000
-    11 = JUNIORSUITE SMOKE KING
-    12 = JUNIORSUITE NON TWIN
-
+    11 = JUNIORSUITE SMOKE KING ( 91 - 93)
+    12 = JUNIORSUITE NON TWIN ( 94 - 96)
+ADDON:
+    1. ekstra bed 100000
+    2. laundry 12500
+    3. Massage 75000
+    3. Meeting Room 450000
+    4. Tambahan breakfast 95000
+SEASON:
+    1. Natal 2020
+    2. Tahun baru 2022 -> % 10
+    3. Lebaran 2022 -> == ( 20-05 ; 02-06)
+    4. Libur Kenaikan kelas 2022 -> - 30000 (16-06 ; 01-07)
 Role :
     1. Admin
+        Bimo
     2. Owner -> 3
+        Eddo
     3. Sales Manager -> 4
+        Budi
     4. General Manager -> 5
-    5. Front Office
+        Sansa
+    5. Front Office -> 2
+        Arum
     6. End User -> 6 - 15
+        6. Pandu 5
+        7. Bambang 4
+        8. Thara 3
+        9. Bayu 2
+        10. Tegar 3
+        11. Sekar
+        12. Ita
+        13. Gibran
+        14. Bona
+        15. Vincen
     7. Group -> 16 -18
+        16. Ica
+            Tadika Mesra Agency
+        17. Kevin
+            Maju Mundur Company
+        18. Cicil
+            PT Kiri Kanan
+Coupon:
+    1. 2021
+    2. 2022 potongan 50rb
+    3. 2022 tebus junior suite 800.000
+Reservation:
+ 4-6 dapet season 2
 
 Requirement:
 1. Season dapat dibuat max h-60 hari
@@ -54,7 +92,7 @@ v RoomType
 v Season
 v SeasonDetail
 v User
-Reservation
-DetailReservation
-Extend
-Facility
+v Reservation
+v DetailReservation
+v Extend
+v Facility

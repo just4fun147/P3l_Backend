@@ -15,6 +15,9 @@ use App\Models\Season;
 use App\Models\SeasonDetail;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Facility;
+use App\Models\Extend;
+use App\Models\DetailReservation;
 use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
@@ -893,7 +896,7 @@ class DatabaseSeeder extends Seeder
          ]);
         Addon::create([
             'id' =>5,
-            'add_on_name'=>'Tambahan breakfast',
+            'add_on_name'=>'Tambahan Breakfast',
             'price'=>95000,
             'is_active'=>true,
             'created_by'=>'Pandu'
@@ -1009,11 +1012,11 @@ class DatabaseSeeder extends Seeder
 
         Season::create([
             'id' =>2,
-            'season_name' => 'Tahun Baru 2021',
+            'season_name' => 'Tahun Baru 2022',
             'capacity' => 50,
             'price_type' => 1,
-            'start_date'=> Carbon::parse('2020-12-29'),
-            'end_date'=> Carbon::parse('2021-01-4'),
+            'start_date'=> Carbon::parse('2021-12-29'),
+            'end_date'=> Carbon::parse('2022-01-4'),
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
@@ -1116,11 +1119,11 @@ class DatabaseSeeder extends Seeder
 
         Season::create([
             'id' =>3,
-            'season_name' => 'Lebaran 2021',
+            'season_name' => 'Lebaran 2022',
             'capacity' => 50,
             'price_type' => 3,
-            'start_date'=> Carbon::parse('2021-05-20'),
-            'end_date'=> Carbon::parse('2021-06-02'),
+            'start_date'=> Carbon::parse('2022-05-20'),
+            'end_date'=> Carbon::parse('2022-06-02'),
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
@@ -1222,17 +1225,17 @@ class DatabaseSeeder extends Seeder
             ]);
         Season::create([
             'id' =>4,
-            'season_name' => 'Libur Kenaikan Kelas 2021',
-            'price_type' => 1,
-            'start_date'=> Carbon::parse('2021-06-18'),
-            'end_date'=> Carbon::parse('2021-07-01'),
+            'season_name' => 'Libur Kenaikan Kelas 2022',
+            'price_type' => 2,
+            'start_date'=> Carbon::parse('2022-06-18'),
+            'end_date'=> Carbon::parse('2022-07-01'),
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
             SeasonDetail::create([
                 'id'=>37,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>1,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1248,7 +1251,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>39,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>3,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1256,7 +1259,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>40,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>4,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1264,7 +1267,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>41,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>5,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1272,7 +1275,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>42,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>6,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1280,7 +1283,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>43,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>7,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1288,7 +1291,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>44,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>8,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1304,7 +1307,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>46,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>10,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1312,7 +1315,7 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>47,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>11,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
@@ -1320,13 +1323,116 @@ class DatabaseSeeder extends Seeder
             SeasonDetail::create([
                 'id'=>48,
                 'season_id' =>4,
-                'room_type_id' =>2,
+                'room_type_id' =>12,
                 'price' =>30000,
                 'is_active' =>true,
                 'created_by' =>'Pandu'
             ]);
-
-
+            Season::create([
+                'id' =>5,
+                'season_name' => 'Natal 2022',
+                'price_type' => 2,
+                'start_date'=> Carbon::parse('2022-06-18'),
+                'end_date'=> Carbon::parse('2022-07-01'),
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+                SeasonDetail::create([
+                    'id'=>49,
+                    'season_id' =>5,
+                    'room_type_id' =>1,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>50,
+                    'season_id' =>5,
+                    'room_type_id' =>2,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>51,
+                    'season_id' =>5,
+                    'room_type_id' =>3,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>52,
+                    'season_id' =>5,
+                    'room_type_id' =>4,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>53,
+                    'season_id' =>5,
+                    'room_type_id' =>5,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>54,
+                    'season_id' =>5,
+                    'room_type_id' =>6,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>55,
+                    'season_id' =>5,
+                    'room_type_id' =>7,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>56,
+                    'season_id' =>5,
+                    'room_type_id' =>8,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>57,
+                    'season_id' =>5,
+                    'room_type_id' =>9,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>58,
+                    'season_id' =>5,
+                    'room_type_id' =>10,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>59,
+                    'season_id' =>5,
+                    'room_type_id' =>11,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
+                SeasonDetail::create([
+                    'id'=>60,
+                    'season_id' =>5,
+                    'room_type_id' =>12,
+                    'price' =>50000,
+                    'is_active' =>true,
+                    'created_by' =>'Pandu'
+                ]);
         
         // COUPON
         Coupon::create([
@@ -1339,8 +1445,8 @@ class DatabaseSeeder extends Seeder
             'price_type'=>1,
             'min_price' => null,
             'max_discount' => 70000,
-            'start_date'=>Carbon::parse('2022-01-01'),
-            'end_date' =>Carbon::parse('2022-12-31'),
+            'start_date'=>Carbon::parse('2021-01-01'),
+            'end_date' =>Carbon::parse('2021-12-31'),
             'is_active' => true,
             'created_by' => 'Pandu'
         ]);
@@ -1578,7 +1684,7 @@ class DatabaseSeeder extends Seeder
         ]);
             Group::create([
                 'id' =>1,
-                'group_name' => 'Tadika Mesra',
+                'group_name' => 'Tadika Mesra Agency',
                 'user_id' => 16,
                 'pic_id'=>4,
                 'is_active' => true,
@@ -1598,7 +1704,7 @@ class DatabaseSeeder extends Seeder
         ]);
             Group::create([
                 'id' =>2,
-                'group_name' => 'Maju Mundur',
+                'group_name' => 'Maju Mundur Company',
                 'user_id' => 17,
                 'pic_id'=>4,
                 'is_active' => true,
@@ -1618,7 +1724,7 @@ class DatabaseSeeder extends Seeder
         ]);
             Group::create([
                 'id' =>3,
-                'group_name' => 'Kiri Kanan',
+                'group_name' => 'PT Kiri Kanan',
                 'user_id' => 17,
                 'pic_id'=>4,
                 'is_active' => true,
@@ -1628,7 +1734,1159 @@ class DatabaseSeeder extends Seeder
         // Reservation
         Reservation::create([
             'id' =>1,
-            'invoice_number' => '202001'
+            'invoice_number' => 'P211220-001',
+            'id_booking' => 'P201220-001',
+            'user_id' => 6,
+            'adult' => 4,
+            'child' => 0,
+            'start_date' => Carbon::parse('2020-12-20'),
+            'end_date' => Carbon::parse('2020-12-21'),
+            'is_paid' => true,
+            'is_extend' => false,
+            'is_active' => true,
+            'created_by' => 'Arum',
         ]);
+            DetailReservation::create([
+                'id' => 1,
+                'reservation_id' => 1,
+                'room_id' => 11,
+                'normal_price' => 250000,
+                'coupon_id' => null,
+                'actual_price' => 250000,
+                'season_id' => null,
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+            DetailReservation::create([
+                'id' => 2,
+                'reservation_id' => 1,
+                'room_id' => 31,
+                'normal_price' => 250000,
+                'coupon_id' => null,
+                'actual_price' => 250000,
+                'season_id' => null,
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+        Reservation::create([
+            'id' =>2,
+            'invoice_number' => 'P211220-002',
+            'id_booking' => 'P201220-002',
+            'user_id' => 7,
+            'adult' => 1,
+            'child' => 0,
+            'start_date' => Carbon::parse('2020-12-20'),
+            'end_date' => Carbon::parse('2020-12-21'),
+            'is_paid' => true,
+            'is_extend' => false,
+            'is_active' => true,
+            'created_by' => 'Arum',
+        ]);
+            DetailReservation::create([
+                'id' => 3,
+                'reservation_id' => 2,
+                'room_id' => 81,
+                'normal_price' => 700000,
+                'coupon_id' => null,
+                'actual_price' => 700000,
+                'season_id' => null,
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+        Reservation::create([
+            'id' =>3,
+            'invoice_number' => 'P281220-001',
+            'id_booking' => 'P241220-001',
+            'user_id' => 6,
+            'adult' => 2,
+            'child' => 0,
+            'start_date' => Carbon::parse('2020-12-24'),
+            'end_date' => Carbon::parse('2020-12-28'),
+            'is_paid' => true,
+            'is_extend' => true,
+            'is_active' => true,
+            'created_by' => 'Pandu',
+        ]);
+            DetailReservation::create([
+                'id' => 4,
+                'reservation_id' => 3,
+                'room_id' => 94,
+                'normal_price' => 1200000,
+                'coupon_id' => 1,
+                'actual_price' => 11000,
+                'season_id' => 1,
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+            Facility::create([
+                'id' => 1,
+                'reservation_id' => 3,
+                'add_on_id' => 1,
+                'quantity' => 1,
+                'is_charge' => false,
+                'is_active' => true,
+                'created_by' => 'Arum'
+            ]);
+            Facility::create([
+                'id' => 2,
+                'reservation_id' => 3,
+                'add_on_id' => 3,
+                'quantity' => 1,
+                'is_charge' => true,
+                'is_active' => true,
+                'created_by' => 'Arum'
+            ]);
+            Extend::create([
+                'id' => 1,
+                'reservation_id' => 3,
+                'start_date' => Carbon::parse('2020-12-28'),
+                'end_date' => Carbon::parse('2020-12-30'),
+                'is_active' => true,
+                'created_by' => 'Pandu'
+            ]);
+// USED
+            Reservation::create([
+                'id' =>4,
+                'invoice_number' => 'P070122-001',
+                'id_booking' => 'P030122-001',
+                'user_id' => 6,
+                'adult' => 2,
+                'child' => 2,
+                'start_date' => Carbon::parse('2022-01-03'),
+                'end_date' => Carbon::parse('2022-01-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Pandu',
+            ]);
+                DetailReservation::create([
+                    'id' =>5,
+                    'reservation_id' => 4,
+                    'room_id' => 51,
+                    'normal_price' => 350000,
+                    'coupon_id' => null,
+                    'actual_price' => 315000,
+                    'season_id' => 2,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+                DetailReservation::create([
+                    'id' =>6,
+                    'reservation_id' => 4,
+                    'room_id' => 52,
+                    'normal_price' => 350000,
+                    'coupon_id' => null,
+                    'actual_price' => 315000,
+                    'season_id' => 2,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+
+            Reservation::create([
+                'id' =>5,
+                'invoice_number' => 'P070122-002',
+                'id_booking' => 'P030122-002',
+                'user_id' => 7,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-01-03'),
+                'end_date' => Carbon::parse('2022-01-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bambang',
+            ]);
+                DetailReservation::create([
+                    'id' =>7,
+                    'reservation_id' => 5,
+                    'room_id' => 91,
+                    'normal_price' => 1200000,
+                    'coupon_id' => null,
+                    'actual_price' => 1080000,
+                    'season_id' => 2,
+                    'is_active' => true,
+                    'created_by' => 'PBambangndu',
+                ]);
+                Facility::create([
+                    'id' => 3,
+                    'reservation_id' => 5,
+                    'add_on_id' => 3,
+                    'quantity' => 1,
+                    'is_charge' => true,
+                    'is_active' => true,
+                    'created_by' => 'Arum'
+                ]);
+            Reservation::create([
+                'id' =>6,
+                'invoice_number' => 'P060122-001',
+                'id_booking' => 'P030122-003',
+                'user_id' => 8,
+                'adult' => 3,
+                'child' =>0,
+                'start_date' => Carbon::parse('2022-01-03'),
+                'end_date' => Carbon::parse('2022-01-06'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Thara',
+            ]);
+                DetailReservation::create([
+                    'id' =>8,
+                    'reservation_id' => 6,
+                    'room_id' => 1,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 225000,
+                    'season_id' => 2,
+                    'is_active' => true,
+                    'created_by' => 'Thara',
+                ]);
+                Facility::create([
+                    'id' => 4,
+                    'reservation_id' => 6,
+                    'add_on_id' => 1,
+                    'quantity' => 1,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Thara'
+                ]);
+                Facility::create([
+                    'id' => 5,
+                    'reservation_id' => 6,
+                    'add_on_id' => 4,
+                    'quantity' => 1,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Thara'
+                ]);
+            Reservation::create([
+                'id' =>7,
+                'invoice_number' => 'P230122-001',
+                'id_booking' => 'P200122-001',
+                'user_id' => 9,
+                'adult' => 1,
+                'child' =>0,
+                'start_date' => Carbon::parse('2022-01-20'),
+                'end_date' => Carbon::parse('2022-01-23'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bayu',
+            ]);
+                DetailReservation::create([
+                    'id' =>9,
+                    'reservation_id' => 7,
+                    'room_id' => 61,
+                    'normal_price' => 350000,
+                    'coupon_id' => 2,
+                    'actual_price' => 300000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bayu',
+                ]);
+            Reservation::create([
+                'id' =>8,
+                'invoice_number' => 'P070122-003',
+                'id_booking' => 'P030122-004',
+                'user_id' => 10,
+                'adult' => 1,
+                'child' => 1,
+                'start_date' => Carbon::parse('2022-01-03'),
+                'end_date' => Carbon::parse('2022-01-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Tegar',
+            ]);
+                DetailReservation::create([
+                    'id' =>10,
+                    'reservation_id' => 8,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'true',
+                ]);
+                Facility::create([
+                    'id' => 6,
+                    'reservation_id' => 8,
+                    'add_on_id' => 2,
+                    'quantity' => 3,
+                    'is_charge' => true,
+                    'is_active' => true,
+                    'created_by' => 'Arum'
+                ]);
+            Reservation::create([
+                'id' =>9,
+                'invoice_number' => 'P270122-001',
+                'id_booking' => 'P260122-001',
+                'user_id' => 11,
+                'adult' => 2,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-01-27'),
+                'end_date' => Carbon::parse('2022-01-26'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Sekar',
+            ]);
+                DetailReservation::create([
+                    'id' =>11,
+                    'reservation_id' => 9,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Sekar',
+                ]);
+            Reservation::create([
+                'id' =>10,
+                'invoice_number' => 'P040222-001',
+                'id_booking' => 'P010222-001',
+                'user_id' => 12,
+                'adult' => 2,
+                'child' => 1,
+                'start_date' => Carbon::parse('2022-02-01'),
+                'end_date' => Carbon::parse('2022-02-04'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Ita',
+            ]);
+                DetailReservation::create([
+                    'id' =>12,
+                    'reservation_id' => 10,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Ita',
+                ]);
+                Facility::create([
+                    'id' => 7,
+                    'reservation_id' => 10,
+                    'add_on_id' => 1,
+                    'quantity' => 1,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Ita'
+                ]);
+            Reservation::create([
+                'id' =>11,
+                'invoice_number' => 'P170222-001',
+                'id_booking' => 'P160222-001',
+                'user_id' => 13,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-02-16'),
+                'end_date' => Carbon::parse('2022-02-17'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Gibran',
+            ]);
+                DetailReservation::create([
+                    'id' =>13,
+                    'reservation_id' => 11,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Gibran',
+                ]);
+            Reservation::create([
+                'id' =>12,
+                'invoice_number' => 'P010322-001',
+                'id_booking' => 'P270222-001',
+                'user_id' => 14,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-02-27'),
+                'end_date' => Carbon::parse('2022-03-01'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bona',
+            ]);
+                DetailReservation::create([
+                    'id' =>14,
+                    'reservation_id' => 12,
+                    'room_id' => 71,
+                    'normal_price' => 350000,
+                    'coupon_id' => null,
+                    'actual_price' => 350000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bona',
+                ]);
+            Reservation::create([
+                'id' =>13,
+                'invoice_number' => 'P160322-002',
+                'id_booking' => 'P150322-001',
+                'user_id' => 15,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-03-15'),
+                'end_date' => Carbon::parse('2022-03-16'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Vincen',
+            ]);
+                DetailReservation::create([
+                    'id' =>15,
+                    'reservation_id' => 13,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Vincen',
+                ]);
+            Reservation::create([
+                'id' =>14,
+                'invoice_number' => 'P070322-001',
+                'id_booking' => 'P030322-001',
+                'user_id' => 6,
+                'adult' => 2,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-03-03'),
+                'end_date' => Carbon::parse('2022-03-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Pandu',
+            ]);
+                DetailReservation::create([
+                    'id' =>16,
+                    'reservation_id' => 14,
+                    'room_id' => 94,
+                    'normal_price' => 1200000,
+                    'coupon_id' => 3,
+                    'actual_price' => 800000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+                Facility::create([
+                    'id' => 8,
+                    'reservation_id' => 14,
+                    'add_on_id' => 3,
+                    'quantity' => 2,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Pandu'
+                ]);
+            Reservation::create([
+                'id' =>15,
+                'invoice_number' => 'P070322-002',
+                'id_booking' => 'P050322-001',
+                'user_id' => 7,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-03-05'),
+                'end_date' => Carbon::parse('2022-03-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bambang',
+            ]);
+                DetailReservation::create([
+                    'id' =>17,
+                    'reservation_id' => 15,
+                    'room_id' => 54,
+                    'normal_price' => 350000,
+                    'coupon_id' => null,
+                    'actual_price' => 350000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bambang',
+                ]);
+            Reservation::create([
+                'id' =>16,
+                'invoice_number' => 'P110322-001',
+                'id_booking' => 'P100322-001',
+                'user_id' => 8,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-03-10'),
+                'end_date' => Carbon::parse('2022-03-11'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Thara',
+                ]);
+                    DetailReservation::create([
+                        'id' =>18,
+                        'reservation_id' => 16,
+                        'room_id' => 53,
+                        'normal_price' => 350000,
+                        'coupon_id' => null,
+                        'actual_price' => 350000,
+                        'season_id' => null,
+                        'is_active' => true,
+                        'created_by' => 'Thara',
+                    ]);
+            Reservation::create([
+                'id' =>17,
+                'invoice_number' => 'P1704122-001',
+                'id_booking' => 'P130422-001',
+                'user_id' => 9,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-04-13'),
+                'end_date' => Carbon::parse('2022-04-17'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bayu',
+            ]);
+                DetailReservation::create([
+                    'id' =>19,
+                    'reservation_id' => 17,
+                    'room_id' => 51,
+                    'normal_price' => 350000,
+                    'coupon_id' => null,
+                    'actual_price' => 350000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bayu',
+                ]);
+            Reservation::create([
+                'id' =>18,
+                'invoice_number' => 'P210522-001',
+                'id_booking' => 'P130122-001',
+                'user_id' => 10,
+                'adult' =>2,
+                'child' =>1,
+                'start_date' => Carbon::parse('2022-05-20'),
+                'end_date' => Carbon::parse('2022-05-21'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Tegar',
+            ]);
+                DetailReservation::create([
+                    'id' =>20,
+                    'reservation_id' => 18,
+                    'room_id' => 86,
+                    'normal_price' => 700000,
+                    'coupon_id' => null,
+                    'actual_price' => 600000,
+                    'season_id' => 3,
+                    'is_active' => true,
+                    'created_by' => 'Tegar',
+                ]);
+            Reservation::create([
+                'id' =>19,
+                'invoice_number' => 'P2505122-002',
+                'id_booking' => 'P200522-002',
+                'user_id' => 6,
+                'adult' => 2,
+                'child' =>1,
+                'start_date' => Carbon::parse('2022-05-20'),
+                'end_date' => Carbon::parse('2022-05-25'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Pandu',
+            ]);
+                DetailReservation::create([
+                    'id' =>21,
+                    'reservation_id' => 19,
+                    'room_id' => 87,
+                    'normal_price' => 700000,
+                    'coupon_id' => null,
+                    'actual_price' => 600000,
+                    'season_id' => 3,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+                Facility::create([
+                    'id' => 9,
+                    'reservation_id' => 19,
+                    'add_on_id' => 1,
+                    'quantity' => 1,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Pandu'
+                ]);
+            Reservation::create([
+                'id' =>20,
+                'invoice_number' => 'P070622-001',
+                'id_booking' => 'P030622-001',
+                'user_id' => 7,
+                'adult' => 1,
+                'child' => 1,
+                'start_date' => Carbon::parse('2022-06-03'),
+                'end_date' => Carbon::parse('2022-06-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bambang',
+            ]);
+                DetailReservation::create([
+                    'id' =>22,
+                    'reservation_id' => 20,
+                    'room_id' => 21,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bambang',
+                ]);
+            Reservation::create([
+                'id' =>21,
+                'invoice_number' => 'P140722-001',
+                'id_booking' => 'P100722-001',
+                'user_id' => 8,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-07-10'),
+                'end_date' => Carbon::parse('2022-07-14'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Thara',
+            ]);
+                DetailReservation::create([
+                    'id' =>23,
+                    'reservation_id' => 21,
+                    'room_id' => 21,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Thara',
+                ]);
+            Reservation::create([
+                'id' =>22,
+                'invoice_number' => 'P120922-001',
+                'id_booking' => 'P070922-001',
+                'user_id' => 10,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-09-07'),
+                'end_date' => Carbon::parse('2022-09-12'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Tegar',
+            ]);
+                DetailReservation::create([
+                    'id' =>24,
+                    'reservation_id' => 22,
+                    'room_id' => 24,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Tegar',
+                ]);
+            Reservation::create([
+                'id' =>23,
+                'invoice_number' => 'P2510122-001',
+                'id_booking' => 'P241022-001',
+                'user_id' => 6,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-10-24'),
+                'end_date' => Carbon::parse('2022-10-25'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Pandu',
+            ]);
+                DetailReservation::create([
+                    'id' =>25,
+                    'reservation_id' => 23,
+                    'room_id' => 24,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+            Reservation::create([
+                'id' =>24,
+                'invoice_number' => 'P071122-001',
+                'id_booking' => 'P031122-001',
+                'user_id' => 7,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-11-03'),
+                'end_date' => Carbon::parse('2022-11-07'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Bambang',
+            ]);
+                DetailReservation::create([
+                    'id' =>26,
+                    'reservation_id' => 24,
+                    'room_id' => 24,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Bambang',
+                ]);
+            Reservation::create([
+                'id' =>25,
+                'invoice_number' => 'P041222-001',
+                'id_booking' => 'P021222-001',
+                'user_id' => 6,
+                'adult' => 1,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-12-02'),
+                'end_date' => Carbon::parse('2022-12-04'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Pandu',
+            ]);
+                DetailReservation::create([
+                    'id' =>27,
+                    'reservation_id' => 25,
+                    'room_id' => 34,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Pandu',
+                ]);
+
+// GROUP RESERVASION
+            Reservation::create([
+                'id' =>26,
+                'invoice_number' => 'G050722-001',
+                'id_booking' => 'G020722-001',
+                'user_id' => 16,
+                'adult' => 24,
+                'child' => 6,
+                'start_date' => Carbon::parse('2022-07-02'),
+                'end_date' => Carbon::parse('2022-07-05'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Budi',
+            ]);
+                DetailReservation::create([
+                    'id' =>28,
+                    'reservation_id' => 26,
+                    'room_id' => 21,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>29,
+                    'reservation_id' => 26,
+                    'room_id' => 22,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>30,
+                    'reservation_id' => 26,
+                    'room_id' => 23,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>31,
+                    'reservation_id' => 26,
+                    'room_id' => 24,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>32,
+                    'reservation_id' => 26,
+                    'room_id' => 25,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>33,
+                    'reservation_id' => 26,
+                    'room_id' => 26,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>34,
+                    'reservation_id' => 26,
+                    'room_id' => 27,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>35,
+                    'reservation_id' => 26,
+                    'room_id' => 28,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>36,
+                    'reservation_id' => 26,
+                    'room_id' => 29,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>37,
+                    'reservation_id' => 26,
+                    'room_id' => 30,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>38,
+                    'reservation_id' => 26,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>39,
+                    'reservation_id' => 26,
+                    'room_id' => 32,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                Facility::create([
+                    'id' => 10,
+                    'reservation_id' => 26,
+                    'add_on_id' => 1,
+                    'quantity' => 6,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Budi'
+                ]);
+
+
+            Reservation::create([
+                'id' =>27,
+                'invoice_number' => 'G050822-001',
+                'id_booking' => 'G020822-001',
+                'user_id' => 17,
+                'adult' => 30,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-08-02'),
+                'end_date' => Carbon::parse('2022-08-05'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Budi',
+            ]);
+                DetailReservation::create([
+                    'id' =>40,
+                    'reservation_id' => 27,
+                    'room_id' => 21,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>41,
+                    'reservation_id' => 27,
+                    'room_id' => 22,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>42,
+                    'reservation_id' => 27,
+                    'room_id' => 23,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>43,
+                    'reservation_id' => 27,
+                    'room_id' => 24,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>44,
+                    'reservation_id' => 27,
+                    'room_id' => 25,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>45,
+                    'reservation_id' => 27,
+                    'room_id' => 26,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>46,
+                    'reservation_id' => 27,
+                    'room_id' => 27,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>48,
+                    'reservation_id' => 27,
+                    'room_id' => 28,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>49,
+                    'reservation_id' => 27,
+                    'room_id' => 29,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>50,
+                    'reservation_id' => 27,
+                    'room_id' => 30,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>51,
+                    'reservation_id' => 27,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>52,
+                    'reservation_id' => 27,
+                    'room_id' => 32,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>53,
+                    'reservation_id' => 27,
+                    'room_id' => 33,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>54,
+                    'reservation_id' => 27,
+                    'room_id' => 34,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>55,
+                    'reservation_id' => 27,
+                    'room_id' => 35,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                Facility::create([
+                    'id' => 11,
+                    'reservation_id' => 27,
+                    'add_on_id' => 1,
+                    'quantity' => 10,
+                    'is_charge' => false,
+                    'is_active' => true,
+                    'created_by' => 'Budi'
+                ]);
+
+            Reservation::create([
+                'id' =>28,
+                'invoice_number' => 'G050922-001',
+                'id_booking' => 'G020922-001',
+                'user_id' => 18,
+                'adult' => 10,
+                'child' => 0,
+                'start_date' => Carbon::parse('2022-09-02'),
+                'end_date' => Carbon::parse('2022-09-05'),
+                'is_paid' => true,
+                'is_extend' => false,
+                'is_active' => true,
+                'created_by' => 'Budi',
+            ]);
+                DetailReservation::create([
+                    'id' =>56,
+                    'reservation_id' => 28,
+                    'room_id' => 31,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>57,
+                    'reservation_id' => 28,
+                    'room_id' => 32,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>58,
+                    'reservation_id' => 28,
+                    'room_id' => 33,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>59,
+                    'reservation_id' => 28,
+                    'room_id' => 34,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                DetailReservation::create([
+                    'id' =>60,
+                    'reservation_id' => 28,
+                    'room_id' => 35,
+                    'normal_price' => 250000,
+                    'coupon_id' => null,
+                    'actual_price' => 250000,
+                    'season_id' => null,
+                    'is_active' => true,
+                    'created_by' => 'Budi',
+                ]);
+                
     }
 }

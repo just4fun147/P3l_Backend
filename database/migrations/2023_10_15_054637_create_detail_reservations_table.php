@@ -16,13 +16,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('reservation_id')->references('id')->on('trn_reservation');
             $table->foreignId('room_id')->references('id')->on('mst_room');
-            $table->float('normal_price');
-            $table->foreignId('coupon_id')->references('id')->on('mst_coupon')->nullable();
-            $table->float('actual_price');
-            $table->foreignId('season_id')->references('id')->on('mst_season')->nullable();
+            $table->double('normal_price',20,0);
+            $table->foreignId('coupon_id')->nullable()->constrained()->references('id')->on('mst_coupon');
+            $table->double('actual_price',20,0);
+            $table->foreignId('season_id')->nullable()->constrained()->references('id')->on('mst_season');
             $table->boolean('is_active');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

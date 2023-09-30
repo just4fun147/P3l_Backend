@@ -15,7 +15,7 @@ class Reservation extends Model
      *
      * @var array<int, string>
      */
-    protected $table = 'mst_group';
+    protected $table = 'trn_reservation';
 
     protected $fillable = [
         'id',
@@ -23,6 +23,8 @@ class Reservation extends Model
         'user_id',
         'start_date',
         'end_date',
+        'adult',
+        'child',
         'is_paid',
         'is_extend',
         'is_active',
