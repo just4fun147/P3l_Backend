@@ -51,14 +51,18 @@ class RoomController extends Controller
         }else if($request->type_name){
             $room = RoomType::where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get();
         }else{
-            $room = RoomType::where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get();
+            $room = RoomType::select('type_name')->where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get()->unique('type_name');
         }
         if($room->count()==0){
             $this->createLog($user->id,'Get Room Type Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }
+        $temp =collect();
+        foreach($room as $r){
+            $temp->push($r);
+        }
         $this->createLog($user->id,'Get Room Type Success');
-            return $this->baseReponse('T','Get Room Type Success',$room, 200);
+            return $this->baseReponse('T','Get Room Type Success',$temp, 200);
 
     }
 
@@ -146,7 +150,7 @@ class RoomController extends Controller
         }else if($request->type_id){
             $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.type_id','=',$request->type_id)->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->get();
         }else{
-            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->get();
+            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->paginate(10);
         }
         if($room->count()==0){
             $this->createLog($user->id,'Get Room Failed');
@@ -161,20 +165,28 @@ class RoomController extends Controller
         $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
             'room_number' => ['required'],
-            'type_id' => ['required', 'numeric']
+            'is_smoking' => ['required'],
+            'is_double' => ['required'],
+            'type_name' => ['required'],
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Create Room Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
-        $type = RoomType::find($request->type_id);
-        if(!$type){
+        $room = Room::where('room_number','=',$request->room_number)->get();
+        if(!$room->isEmpty()){
+            $this->createLog($user->id,'Create Room Failed');
+            return $this->baseReponse('F','Room Number Already Taken','', 404);
+        }
+        $type = RoomType::where('type_name','=',$request->type_name)->where('is_smoking','=',$request->is_smoking)->where('is_double','=',$request->is_double)->get();
+        
+        if($type->isEmpty()){
             $this->createLog($user->id,'Create Room Failed');
             return $this->baseReponse('F',"Room Type Not Found",'', 401);
         }
         $temp = array(
             'room_number' => $request->room_number,
-            'type_id' => $request->type_id,
+            'type_id' => $type[0]->id,
             'created_by' => $user->full_name,
             'is_active' => 1        
         );

@@ -96,3 +96,5 @@ v Reservation
 v DetailReservation
 v Extend
 v Facility
+
+tambahin kolom end_paid

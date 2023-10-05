@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\LoginLog;
 use App\Helpers\UserSystemInfoHelper;
 use Illuminate\Support\Facades\Validator;
@@ -56,11 +57,21 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
         $credentials['is_active'] = true;
-        $credentials['is_group'] = false;
         if(Auth::attempt($credentials)){
             /** @var \App\Models\User $user **/
             $user = Auth::user();
-            
+            if($user->role_id==7){
+                $log = array(
+                    'user_id' => '',
+                    'status' => 'Invalid Email / Password',
+                    'ip_address' => $getip,
+                    'browser' => $getbrowser,
+                    'device' => $getdevice,
+                    'os' => $getos,
+                );
+                LoginLog::create($log);
+                return $this->baseReponse('F','Invalid Email/Password','',401);
+            }
             
             $checkToken = DB::table('personal_access_tokens')->where('tokenable_id','=',$user->id);
             
@@ -79,7 +90,9 @@ class AuthController extends Controller
                 'os' => $getos,
             );
             LoginLog::create($log);
-            return $this->baseReponse('T','Login Success',['token' => $token, 'type' => 'Beare','name'=>$user->full_name],200);
+            $role = Role::find($user->role_id);
+
+            return $this->baseReponse('T','Login Success',['token' => $token, 'type' => 'Beare','name'=>$user->full_name, 'role' => $role->uuid],200);
         }else{
             $log = array(
                 'user_id' => '',

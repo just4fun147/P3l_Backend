@@ -1548,7 +1548,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223214',
             'email' => 'budi@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 3,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1561,7 +1561,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223215',
             'email' => 'sansa@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 4,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1574,7 +1574,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223216',
             'email' => 'pandu@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1586,7 +1586,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223217',
             'email' => 'bambang@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1598,7 +1598,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223218',
             'email' => 'thara@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1610,7 +1610,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223219',
             'email' => 'bayu@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1622,7 +1622,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223210',
             'email' => 'tegar@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1634,7 +1634,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223211',
             'email' => 'sekar@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1646,7 +1646,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223212',
             'email' => 'ita@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1658,7 +1658,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223213',
             'email' => 'gibran@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1670,7 +1670,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223214',
             'email' => 'bona@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
@@ -1682,7 +1682,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '081112223215',
             'email' => 'thara@gmail.com',
             'address' => 'jl. apa ya',
-            'role_id' => 1,
+            'role_id' => 6,
             'password' => bcrypt('123'),
             'is_active' => true,
             'created_by' => "Pandu"
