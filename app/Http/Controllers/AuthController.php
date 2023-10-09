@@ -7,9 +7,11 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\LoginLog;
 use App\Helpers\UserSystemInfoHelper;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 class AuthController extends Controller
 {
@@ -22,6 +24,20 @@ class AuthController extends Controller
             ),$code)->header(
             'Content-Type','application/json'
         );
+    }
+    public function createLog($id, $desc){
+        $l = array(
+            'user_id' => $id,
+            'description' => $desc
+        );
+        ActivityLog::create($l);
+    }
+
+    public function checkToken($bearer){
+        $header = $bearer;
+        $t = PersonalAccessToken::findToken($header);
+        $user = $t->tokenable;
+        return $user;
     }
     public function login(Request $request){
         if(isset($request->user_agent)){
@@ -137,5 +153,36 @@ class AuthController extends Controller
         );
         LoginLog::create($log);
         return $this->baseReponse('T','Logout Success!','',200);
+    }
+
+    public function changePassword(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'old_password' => ['required'],
+            'new_password' => ['required'],
+            'confirm_new_password' => ['required']
+        ]);        
+        if($validate->fails()){
+            $this->createLog($user->id,'Change Password Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 404);
+        }
+        if($request->new_password!=$request->confirm_new_password){
+            $this->createLog($user->id,'Change Password Failed');
+            return $this->baseReponse('F','New Password Did\'t Match','', 404);
+        }
+        if(!Hash::check($request->old_password,$user->password)){
+            $this->createLog($user['id'],'Edit User Password Failed id_user '.$request->id);
+            return $this->baseReponse('F', 'Wrong Password', '',400);    
+        }
+        if($request->old_password == $request->new_password){
+            $this->createLog($user['id'],'Edit User Password Failed id_user '.$request->id);
+            return $this->baseReponse('F', 'New Password Same With Old Password', '',400);    
+
+        }
+        $u = User::find($user->id);
+        $u->password = bcrypt($request->new_password);
+        $u->save();
+        $this->createLog($user['id'],'Edit User Password Success '.$request->id);
+        return $this->baseReponse('T', 'Edit Password Success', '',200);    
     }
 }

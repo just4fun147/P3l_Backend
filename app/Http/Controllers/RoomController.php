@@ -47,7 +47,7 @@ class RoomController extends Controller
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Get Room Type Failed');
-            return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+            return $this->baseReponse('F',$validate->errors()->first(),'', 404);
         }
         if($request->id==-1){
             $room = RoomType::where('is_active','=',1)->where('type_name','like','%'.$request->type_name.'%')->get();
