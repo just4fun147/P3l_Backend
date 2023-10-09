@@ -8,6 +8,8 @@ use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Str;
+
 
 class RoomController extends Controller
 {
@@ -46,7 +48,10 @@ class RoomController extends Controller
         if($validate->fails()){
             $this->createLog($user->id,'Get Room Type Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
-        }if($request->id){
+        }
+        if($request->id==-1){
+            $room = RoomType::where('is_active','=',1)->where('type_name','like','%'.$request->type_name.'%')->get();
+        }else if($request->id){
             $room = RoomType::where('id','=',$request->id)->where('is_active','=',1)->get();
         }else if($request->type_name){
             $room = RoomType::where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get();
@@ -58,8 +63,25 @@ class RoomController extends Controller
             return $this->baseReponse('F','Data Not Found','', 404);
         }
         $temp =collect();
-        foreach($room as $r){
-            $temp->push($r);
+        if($request->id!=-1){
+            foreach($room as $r){
+                $temp->push($r);
+            }
+        }else{
+            foreach($room as $r){
+                $r->total = Room::where('type_id','=',$r->id)->where('is_active','=',1)->count();
+                if($r->is_smoking){
+                    $r->type_name = $r->type_name." - Smoking Room";
+                }else{
+                    $r->type_name = $r->type_name." - Non Smoking Room";
+                }
+                if($r->is_double==0){
+                    $r->bed="Twin";
+                }else if($r->is_double==1){
+                    $r->bed="Double";
+                }
+            }
+            $temp = $room;
         }
         $this->createLog($user->id,'Get Room Type Success');
             return $this->baseReponse('T','Get Room Type Success',$temp, 200);
@@ -71,16 +93,24 @@ class RoomController extends Controller
         $validate = Validator::make($request->all(), [
             'type_name' => ['required'],
             'price' => ['required', 'numeric'],
-            'desc' => ['required']
+            'is_smoking' => ['required'],
+            'is_double' => ['required']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Create Room Type Failed');
-            return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $check = RoomType::where('is_smoking', '=', $request->is_smoking)->where('is_double', '=', $request->is_double)->where('type_name', '=', $request->type_name)->get();
+        if($check->count()!=0){
+            $this->createLog($user->id,'Create Room Type Failed, Already Exist');
+            return $this->baseReponse('F',"Room Type Already Exist",'', 400);
         }
         $temp = array(
             'type_name' => $request->type_name,
             'price' => $request->price,
-            'desc' => $request->desc,
+            'uuid'=> Str::uuid(),
+            'is_smoking' => $request->is_smoking,
+            'is_double' => $request->is_double,
             'created_by' => $user->full_name,
             'is_active' => 1        
         );
@@ -115,7 +145,8 @@ class RoomController extends Controller
             'id' => ['required'],
             'type_name' => ['required'],
             'price' => ['required','numeric'],
-            'desc' =>['required']
+            'is_smoking' =>['required'],
+            'is_double' =>['required']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Edit Room Type Failed');
@@ -128,7 +159,8 @@ class RoomController extends Controller
         }
         $room->type_name = $request->type_name;
         $room->price = $request->price;        
-        $room->desc = $request->desc;        
+        $room->is_smoking = $request->is_smoking;        
+        $room->is_double = $request->is_double;        
         $room->updated_by = $user->full_name;
         $room->save();
         $this->createLog($user['id'],'Edit Room Type : '.$room->id.'');
