@@ -65,4 +65,8 @@ Route::post('/add-on/create', [App\Http\Controllers\AddonController::class, 'sto
 Route::post('/add-on/edit', [App\Http\Controllers\AddonController::class, 'edit'])->middleware(['header','token']);
 Route::post('/add-on/delete', [App\Http\Controllers\AddonController::class, 'delete'])->middleware(['header','token']);
 
+// Report
+Route::post('/report/monthly', [App\Http\Controllers\ReportController::class, 'monthly'])->middleware(['header','token']);
+Route::post('/report/getYear', [App\Http\Controllers\ReportController::class, 'getAvailYear'])->middleware(['header','token']);
+
 
