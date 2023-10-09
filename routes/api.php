@@ -68,6 +68,9 @@ Route::post('/add-on/delete', [App\Http\Controllers\AddonController::class, 'del
 // Report
 Route::post('/report/monthly', [App\Http\Controllers\ReportController::class, 'monthly'])->middleware(['header','token']);
 Route::post('/report/getYear', [App\Http\Controllers\ReportController::class, 'getAvailYear'])->middleware(['header','token']);
+Route::post('/report/getYearUser', [App\Http\Controllers\ReportController::class, 'getAvailYearUser'])->middleware(['header','token']);
 Route::post('/report/guest', [App\Http\Controllers\ReportController::class, 'getGuestPerMonth'])->middleware(['header','token']);
+Route::post('/report/new-customer', [App\Http\Controllers\ReportController::class, 'newCust'])->middleware(['header','token']);
+Route::post('/report/loyal-customer', [App\Http\Controllers\ReportController::class, 'loyalCustomer'])->middleware(['header','token']);
 
 
