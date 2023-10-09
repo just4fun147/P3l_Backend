@@ -68,5 +68,6 @@ Route::post('/add-on/delete', [App\Http\Controllers\AddonController::class, 'del
 // Report
 Route::post('/report/monthly', [App\Http\Controllers\ReportController::class, 'monthly'])->middleware(['header','token']);
 Route::post('/report/getYear', [App\Http\Controllers\ReportController::class, 'getAvailYear'])->middleware(['header','token']);
+Route::post('/report/guest', [App\Http\Controllers\ReportController::class, 'getGuestPerMonth'])->middleware(['header','token']);
 
 

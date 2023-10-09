@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Models\DetailReservation;
 use App\Models\Reservation;
+use App\Models\RoomType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,7 @@ class ReportController extends Controller
                                 ->whereYear('trn_reservation.start_date','=', $request->year)
                                 ->whereMonth('trn_reservation.start_date','=', $m)
                                 ->get();
-                                $grup = 0;
+            $grup = 0;
             $personal = 0;
             $month=$this->getMonth($m);
             foreach($reservation as $r){
@@ -135,5 +136,63 @@ class ReportController extends Controller
         if($m==12){
             return "Desember";
         }
+    }
+
+    public function getGuestPerMonth(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'year' => ['required'],
+            'month' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Generate Guest Report Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $res = collect();
+        $totals = 0;
+        $c=1;
+        $room_type = RoomType::select('type_name')->distinct('type_name')->get();
+        foreach($room_type as $t){
+            $reservation = DetailReservation::join('trn_reservation','trn_reservation.id','=','trn_detail_reservation.reservation_id')
+                            ->join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                            ->join('mst_room','mst_room.id','=','trn_detail_reservation.room_id')
+                            ->join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
+                            ->whereYear('trn_reservation.start_date','=', $request->year)
+                            ->whereMonth('trn_reservation.start_date','=', $request->month)
+                            ->where('mst_room_type.type_name','like','%'.$t->type_name.'%')
+                            ->get();
+            $personal = 0;
+            $grup = 0;
+            foreach($reservation as $r){
+                if($r->role_id==6){
+                    $personal++;
+                }
+                if($r->role_id==7){
+                    $grup++;
+                }
+                $totals++;
+            }
+            $temp = array(
+                'no' => $c,
+                'type_name' => $t->type_name,
+                'personal' => $personal,
+                'group' => $grup,
+                'total' => $grup+$personal
+
+            );
+            $res->push($temp);
+            $c++;
+        }
+        $dtTemp = Carbon::now();
+        $dt = $dtTemp->day ." " .$this->getMonth($dtTemp->month)." ".$request->year;
+        $result = array(
+            'today' => $dt,
+            'total' => $totals,
+            'year' => $request->year,
+            'month' => $this->getMonth($request->month),
+            'data' => $res
+        );
+        return $this->baseReponse('T',"Get Report Success",$result, 200);
+
     }
 }
