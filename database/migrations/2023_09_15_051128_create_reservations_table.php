@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('adult');
             $table->integer('child');
             $table->boolean('is_paid');
+            $table->boolean('end_paid')->default(false);
             $table->boolean('is_extend');
             $table->boolean('is_active');
             $table->string('created_by');

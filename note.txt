@@ -97,4 +97,7 @@ v DetailReservation
 v Extend
 v Facility
 
-tambahin kolom end_paid
+status reservation:
+    2 : End (Success)
+    1 : OPEN
+    0 : CLOSE (Not Paid)

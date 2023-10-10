@@ -84,8 +84,7 @@ class RoomController extends Controller
             $temp = $room;
         }
         $this->createLog($user->id,'Get Room Type Success');
-            return $this->baseReponse('T','Get Room Type Success',$temp, 200);
-
+        return $this->baseReponse('T','Get Room Type Success',$temp, 200);
     }
 
     public function storeType(Request $request){

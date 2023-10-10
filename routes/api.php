@@ -73,4 +73,7 @@ Route::post('/report/guest', [App\Http\Controllers\ReportController::class, 'get
 Route::post('/report/new-customer', [App\Http\Controllers\ReportController::class, 'newCust'])->middleware(['header','token']);
 Route::post('/report/loyal-customer', [App\Http\Controllers\ReportController::class, 'loyalCustomer'])->middleware(['header','token']);
 
+// Reservation
+Route::post('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->middleware(['header','token']);
+
 

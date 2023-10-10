@@ -26,6 +26,7 @@ class Reservation extends Model
         'adult',
         'child',
         'is_paid',
+        'end_paid',
         'is_extend',
         'is_active',
         'created_by',
