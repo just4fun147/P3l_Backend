@@ -59,6 +59,7 @@ class ReservationController extends Controller
                                     })
                                     ->where('mst_user.role_id','=',7)
                                     ->where('trn_reservation.is_active','=',$request->is_open)
+                                    ->select('trn_reservation.*', 'mst_user.full_name','mst_group.group_name','mst_group.pic_id')
                                     ->orderBy('trn_reservation.start_date', 'DESC')
                                     ->paginate(10);
         }else{
@@ -66,18 +67,28 @@ class ReservationController extends Controller
                                     ->where('mst_user.full_name','like','%'.$request->search.'%')
                                     ->where('mst_user.role_id','=',6)
                                     ->where('trn_reservation.is_active','=',$request->is_open)
+                                    ->select('trn_reservation.*', 'mst_user.full_name')
                                     ->orderBy('trn_reservation.start_date', 'DESC')
                                     ->paginate(10);
         }
         $c=1;
         foreach($reservation as $r){
-            if(!$r->is_active){
-                $r->status = 0;
-            }else if($r->end_paid){
-                $r->status = 2;
-            }else{
-                $r->status = 1;
+            // 0 :expired
+    // 1 : cancelable - not paid - can paid
+    // 2 : not paid - can paid 
+    // 3 : paid v
+    // 4 : success v
+    // 5 : canceled v
+            if($r->is_active==true && $r->is_paid == 1){
+                if($r->end_paid == 1){
+                    $r->status=4;
+                }else{
+                    $r->status=3;
+                }
+            }else if($r->is_active==false){
+                $r->status = 5;
             }
+            
             if($request->is_group){
                 $name = User::find($r->pic_id);
                 $r->pic_name=$name->full_name;
@@ -87,5 +98,25 @@ class ReservationController extends Controller
         }
         $this->createLog($user->id,'Get Reservation Success');
         return $this->baseReponse('T','Get Reservation Success',$reservation, 200);
+    }
+
+    public function cancelReservation(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'id' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Cancel Reservation Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $reservation = Reservation::find($request->id);
+        if($reservation->is_active==false){
+            $this->createLog($user->id,'Cancel Reservation Failed');
+            return $this->baseReponse('F','Something Went Wrong','', 400);
+        }
+        $reservation->is_active = false;
+        $reservation->save();
+        $this->createLog($user->id,'Cancel Reservation Success');
+        return $this->baseReponse('T','Cancel Reservation Success','', 200);
     }
 }

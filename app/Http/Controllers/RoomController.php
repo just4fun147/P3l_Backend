@@ -181,7 +181,7 @@ class RoomController extends Controller
         }else if($request->type_id){
             $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.type_id','=',$request->type_id)->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->get();
         }else{
-            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->orderBy('id')->paginate(10);
+            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->orderBy('mst_room.room_number')->paginate(10);
         }
         if($room->count()==0){
             $this->createLog($user->id,'Get Room Failed');

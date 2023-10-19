@@ -75,5 +75,6 @@ Route::post('/report/loyal-customer', [App\Http\Controllers\ReportController::cl
 
 // Reservation
 Route::post('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->middleware(['header','token']);
+Route::post('/reservation/cancel', [App\Http\Controllers\ReservationController::class, 'cancelReservation'])->middleware(['header','token']);
 
 

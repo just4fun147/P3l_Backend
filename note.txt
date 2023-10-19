@@ -98,6 +98,9 @@ v Extend
 v Facility
 
 status reservation:
-    2 : End (Success)
-    1 : OPEN
-    0 : CLOSE (Not Paid)
+    0 :expired
+    1 : cancelable - not paid - can paid
+    2 : not paid - can paid
+    3 : paid
+    4 : success
+    5 : canceled

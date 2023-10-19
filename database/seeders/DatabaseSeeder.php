@@ -1744,7 +1744,7 @@ class DatabaseSeeder extends Seeder
             Group::create([
                 'id' =>3,
                 'group_name' => 'PT Kiri Kanan',
-                'user_id' => 17,
+                'user_id' => 18,
                 'pic_id'=>4,
                 'is_active' => true,
                 'created_by' => 'Pandu'
