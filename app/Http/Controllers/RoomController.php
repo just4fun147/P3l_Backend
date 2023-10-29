@@ -171,7 +171,8 @@ class RoomController extends Controller
         $validate = Validator::make($request->all(), [
             'id' => ['nullable'],
             'room_number' => ['nullable'],
-            'type_id' =>['nullable']
+            'type_id' =>['nullable'],
+            'room_type' =>['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Get Room Failed');
@@ -181,7 +182,11 @@ class RoomController extends Controller
         }else if($request->type_id){
             $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.type_id','=',$request->type_id)->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->get();
         }else{
-            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where('mst_room.room_number','like','%'.$request->room_number.'%')->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->orderBy('mst_room.room_number')->paginate(10);
+            $search = $request->room_number;
+            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')->where(function ($query) use($search) {
+                $query->where('mst_room.room_number','like','%'.$search.'%')
+                      ->orWhere('mst_room_type.type_name','like','%'.$search.'%');})
+                      ->where('mst_room.is_active','=',1)->where('mst_room_type.is_active','=',1)->select('mst_room.*','mst_room_type.type_name')->orderBy('mst_room.room_number')->paginate(10);
         }
         if($room->count()==0){
             $this->createLog($user->id,'Get Room Failed');
@@ -259,19 +264,19 @@ class RoomController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         
-
         $type = RoomType::where('type_name','=',$request->type_name)->where('is_smoking','=',$request->is_smoking)->where('is_double','=',$request->is_double)->get();
 
-        if(!$type){
+        if($type->isEmpty()){
             $this->createLog($user->id,'Create Room Failed');
             return $this->baseReponse('F',"Room Type Not Found",'', 401);
         }
         $room = Room::find($request->id);
-        $roomCheck = Room::where('room_number','=',$request->room_number)->get();
-    
-        if($roomCheck->count()!=0 && $roomCheck[0]->id != $room->id){
-            $this->createLog($user->id,'Create Room Failed');
-            return $this->baseReponse('F','Room Number Already Taken','', 404);
+        $roomCheck = Room::where('room_number','=',$request->room_number)->where('is_active','=',1)->get();
+        foreach($roomCheck as $r){
+            if($r->id!=$room->id){
+                $this->createLog($user->id,'Create Room Failed');
+                return $this->baseReponse('F','Room Number Already Taken','', 404);
+            }
         }
         if(!$room || $room->is_active==0){
             $this->createLog($user->id,'Edit Room Failed');

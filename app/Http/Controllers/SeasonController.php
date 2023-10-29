@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\RoomType;
+use App\Models\SeasonDetail;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Season;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class SeasonController extends Controller
 {
@@ -48,7 +51,16 @@ class SeasonController extends Controller
         }if($request->id){
             $season = Season::where('id','=',$request->id)->where('is_active','=',1)->get();
         }else{
-            $season = Season::where('season_name','like','%'.$request->season_name.'%')->where('is_active','=',1)->get();
+            $season = Season::where('season_name','like','%'.$request->season_name.'%')->where('is_active','=',1)->paginate(10);
+            $now = Carbon::now();
+            foreach($season as $s){
+                $temp = Carbon::parse($s->start_date);
+                if($now<$temp && $now->diffInMonths($temp)>=2 ){
+                    $s->action = true;
+                }else{
+                    $s->action =false;
+                }
+            }
         }
         if($season->count()==0){
             $this->createLog($user->id,'Get Season Failed');
@@ -64,31 +76,80 @@ class SeasonController extends Controller
         $validate = Validator::make($request->all(), [
             'season_name' => ['required'],
             'capacity' => ['required', 'numeric'],
+            'capacity_type' => ['required'],
             'price' => ['required','numeric'],
             'price_type' => ['required','numeric'],
             'start_date' => ['required','date'],
-            'end_date' => ['required','date']
+            'end_date' => ['required','date'],
+            'data' => ['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Create Season Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
-        if($request->start_data>$request->end_date){
+        if($request->start_date>$request->end_date){
             $this->createLog($user->id,'Create Season Failed');
             return $this->baseReponse('F',"Invalid Date",'', 401);
+        }
+        if($request->capacity_type && $request->capacity<=0){
+            $this->createLog($user->id,'Create Season Failed');
+            return $this->baseReponse('F',"Invalid Capacity",'', 401);
+        }
+        if($request->price<=0){
+            $this->createLog($user->id,'Create Season Failed');
+            return $this->baseReponse('F',"Invalid Price",'', 401);
+        }
+        if($request->price_type=="1" && $request->price>100){
+            $this->createLog($user->id,'Create Season Failed');
+            return $this->baseReponse('F',"Invalid Discount Amount",'', 401);
+        }
+        $now = Carbon::now();
+        $temp = Carbon::parse($request->start_date);
+        if($temp->diffInMonths($now)<2){
+            $this->createLog($user->id,'Create Season Failed');
+            return $this->baseReponse('F',"The season starts in less than 2 months!",'', 401);
         }
         $temp = array(
             'season_name' => $request->season_name,
             'capacity' => $request->capacity,
-            'price' => $request->price,
-            'price_type' => $request->price_type,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'price_type' => (int)$request->price_type,
+            'start_date' => Carbon::parse($request->start_date),
+            'end_date' => Carbon::parse($request->end_date),
             'created_by' => $user->full_name,
             'is_active' => 1        
         );
         $season = Season::create($temp);
         $this->createLog($user['id'],'Create Season : '.$season->id.'');
+        if($request->capacity_type){
+            foreach($request->data as $d){
+                $type = RoomType::where('type_name','=',$d->type_name)->get();
+                foreach($type as $t){
+                    $temps = array(
+                        'season_id' => $season->id,
+                        'room_type_id'=> $t->id,
+                        'price' => $d->price,
+                        'is_active'=>1,
+                        'created_by' => $user->full_name
+                        
+                    );
+                    SeasonDetail::create($temps);
+                }
+            }
+        }else{
+            foreach($request->data as $d){
+                $type = RoomType::get();
+                foreach($type as $t){
+                    $temps = array(
+                        'season_id' => $season->id,
+                        'room_type_id'=> $t->id,
+                        'price' => $request->price,
+                        'is_active'=>1,
+                        'created_by' => $user->full_name
+                    );
+                    SeasonDetail::create($temps);
+                }
+            }
+        }
         return $this->baseReponse('T','Create Season Success!','', 200);
     }
 

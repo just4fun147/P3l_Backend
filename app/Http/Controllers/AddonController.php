@@ -48,7 +48,7 @@ class AddonController extends Controller
         }if($request->id){
             $addon = Addon::where('id','=',$request->id)->where('is_active','=',1)->get();
         }else{
-            $addon = Addon::where('add_on_name','like','%'.$request->add_on_name.'%')->where('is_active','=',1)->get();
+            $addon = Addon::where('add_on_name','like','%'.$request->add_on_name.'%')->where('is_active','=',1)->paginate(10);
         }
         if($addon->count()==0){
             $this->createLog($user->id,'Get Add On Failed');
@@ -68,6 +68,11 @@ class AddonController extends Controller
         if($validate->fails()){
             $this->createLog($user->id,'Create Add On Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+        }
+        $find = Addon::where('add_on_name','=',$request->add_on_name)->where('is_active','=',1)->get();
+        if(!$find->isEmpty()){
+            $this->createLog($user->id,'Create Add On Failed');
+            return $this->baseReponse('F','Facility Already Exist','', 401);
         }
         $temp = array(
             'add_on_name' => $request->add_on_name,
@@ -112,6 +117,13 @@ class AddonController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
         $addon = Addon::find($request->id);
+        $find = Addon::where('add_on_name','=',$request->add_on_name)->where('is_active','=',1)->get();
+        foreach($find as $f){
+            if($f->id != $addon->id){
+                $this->createLog($user->id,'Edit Add On Failed');
+                return $this->baseReponse('F',"Facility Already Exist",'', 401);
+            }
+        }
         if(!$addon || $addon->is_active==0){
             $this->createLog($user->id,'Edit Add On Failed');
             return $this->baseReponse('F',"Data Not Found",'', 404);
