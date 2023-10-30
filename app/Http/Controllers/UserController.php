@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function baseResponse($status,$mess,$data,$code)
+    public function baseReponse($status,$mess,$data,$code)
     {   
         return response()->json(array(
             'OUT_STAT' => $status,
@@ -55,7 +55,7 @@ class UserController extends Controller
     public function register(Request $request){
         $validate = Validator::make($request->all(), [
             'email' => ['required', 'email'],
-            'password' => ['nullable'],
+            'password' => ['required','min:8'],
             'full_name' => ['required'],
             'identity' => ['required'],
             'phone_number' => ['required'],
@@ -67,6 +67,18 @@ class UserController extends Controller
         if($validate->fails()){
             $this->createLog(1,'Register Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+        }
+        $checkEmail = User::where('email','=',$request->email)->where('is_active','=',1)->where('role_id','=',$request->role)->get();
+        $checkName = User::where('full_name','=',$request->full_name)->where('is_active','=',1)->where('role_id','=',$request->role)->get();
+        if($request->role==6){
+            if($checkName->count()!=0){
+                $this->createLog(1,'Register Failed');
+                return $this->baseReponse('F',"Name already registered",'', 401);
+            }
+            if($checkEmail->count()!=0){
+                $this->createLog(1,'Register Failed');
+                return $this->baseReponse('F',"Email already registered",'', 401);
+            }
         }
         if(isset($request->image)&& $request->image!=null){
             $path = 'user-images/'.$request->name.'/';
@@ -116,6 +128,20 @@ class UserController extends Controller
             
             $this->createLog($u->id,'Failed edit user Invalid Request');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $checkEmail = User::where('email','=',$request->email)->where('is_active','=',1)->where('role_id','=',6)->get();
+        $checkName = User::where('full_name','=',$request->full_name)->where('is_active','=',1)->where('role_id','=',6)->get();
+        foreach($checkName as $cn){
+            if($cn->id!=$u->id){
+                $this->createLog($u->id,'Edit Profile Failed');
+                return $this->baseReponse('F',"Name already registered",'', 401);
+            }
+        }
+        foreach($checkEmail as $ce){
+            if($ce->id!=$u->id){
+                $this->createLog($u->id,'Edit Profile Failed');
+                return $this->baseReponse('F',"Email already registered",'', 401);
+            }
         }
         $u->full_name = $request->full_name;
         $u->email = $request->email;

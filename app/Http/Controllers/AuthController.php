@@ -159,7 +159,7 @@ class AuthController extends Controller
         $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
             'old_password' => ['required'],
-            'new_password' => ['required'],
+            'new_password' => ['required','min:8'],
             'confirm_new_password' => ['required']
         ]);        
         if($validate->fails()){

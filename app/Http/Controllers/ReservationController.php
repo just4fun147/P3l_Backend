@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Models\Reservation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -43,7 +44,8 @@ class ReservationController extends Controller
             'id' => ['nullable'],
             'search' => ['nullable'],
             'is_group' => ['required'],
-            'is_open' => ['required']
+            'is_open' => ['required'],
+            'is_paid' => ['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Get Room Type Failed');
@@ -63,20 +65,60 @@ class ReservationController extends Controller
                                     ->orderBy('trn_reservation.start_date', 'DESC')
                                     ->paginate(10);
         }else{
-            $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
-                                    ->where('mst_user.full_name','like','%'.$request->search.'%')
-                                    ->where('mst_user.role_id','=',6)
-                                    ->where('trn_reservation.is_active','=',$request->is_open)
-                                    ->select('trn_reservation.*', 'mst_user.full_name')
-                                    ->orderBy('trn_reservation.start_date', 'DESC')
-                                    ->paginate(10);
+            if($request->is_paid==false && $request->is_open==false){
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                            ->where('mst_user.full_name','like','%'.$request->search.'%')
+                                            ->where('mst_user.role_id','=',6)
+                                            ->where('trn_reservation.end_paid','=',1)
+                                            ->where('trn_reservation.user_id','=',$user->id)
+                                            ->select('trn_reservation.*', 'mst_user.full_name')
+                                            ->orderBy('trn_reservation.start_date', 'DESC')
+                                            ->paginate(10);
+            }else{
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                            ->where('mst_user.full_name','like','%'.$request->search.'%')
+                                            ->where('mst_user.role_id','=',6)
+                                            ->where('trn_reservation.is_active','=',$request->is_open)
+                                            ->where('trn_reservation.is_paid','=',$request->is_paid)
+                                            ->where('trn_reservation.end_paid','=',0)
+                                            ->where('trn_reservation.user_id','=',$user->id)
+                                            ->select('trn_reservation.*', 'mst_user.full_name')
+                                            ->orderBy('trn_reservation.start_date', 'DESC')
+                                            ->paginate(10);
+            }
         }
         $c=1;
+        $now = Carbon::now();
         foreach($reservation as $r){
+            $parse= Carbon::parse($r->start_date);
+            if($r->is_active){
+                $r->is_active = 5;
+            }else{
+                if($parse<$now){
+                    $r->status = 0;
+                }else{
+                    if($r->is_paid==0){
+                        if($parse->diffInMonths()>=2){
+                            $r->status = 1;
+                        }else{
+                            $r->status = 2;
+                        }
+                    }elseif($r->is_paid==1 && $r->end_paid==1){
+                        $r->status = 4;
+                    }else{
+                        if($parse->diffInMonths()>=2){
+                            $r->status = 3;
+                        }else{
+                            $r->status = 4;
+                        }
+                    }
+                }
+            }
             // 0 :expired
     // 1 : cancelable - not paid - can paid
     // 2 : not paid - can paid 
-    // 3 : paid v
+    // 3 : paid cancelablev
+    // 4 : paid uncancel v
     // 4 : success v
     // 5 : canceled v
             if($r->is_active==true && $r->is_paid == 1){

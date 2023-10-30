@@ -99,7 +99,7 @@ class RoomController extends Controller
             $this->createLog($user->id,'Create Room Type Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
-        $check = RoomType::where('is_smoking', '=', $request->is_smoking)->where('is_double', '=', $request->is_double)->where('type_name', '=', $request->type_name)->get();
+        $check = RoomType::where('is_smoking', '=', $request->is_smoking)->where('is_double', '=', $request->is_double)->where('type_name', '=', $request->type_name)->where('is_active','=',1)->get();
         if($check->count()!=0){
             $this->createLog($user->id,'Create Room Type Failed, Already Exist');
             return $this->baseReponse('F',"Room Type Already Exist",'', 400);
@@ -156,6 +156,13 @@ class RoomController extends Controller
             $this->createLog($user->id,'Edit Room Type Failed');
             return $this->baseReponse('F',"Data Not Found",'', 404);
         }
+        $check = RoomType::where('is_smoking', '=', $request->is_smoking)->where('is_double', '=', $request->is_double)->where('type_name', '=', $request->type_name)->where('is_active','=',1)->get();
+        foreach($check as $c){
+            if($c->id !=$room->id){
+                $this->createLog($user->id,'Create Room Type Failed, Already Exist');
+                return $this->baseReponse('F',"Room Type Already Exist",'', 400);
+            }
+        } 
         $room->type_name = $request->type_name;
         $room->price = $request->price;        
         $room->is_smoking = $request->is_smoking;        
