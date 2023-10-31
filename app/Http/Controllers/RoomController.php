@@ -296,4 +296,19 @@ class RoomController extends Controller
         $this->createLog($user['id'],'Edit Room : '.$room->id.'');
         return $this->baseReponse('T','Edit Room Success!','', 200);
     }
+
+    public function getAvail(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'start_date' => ['required'],
+            'end_date' => ['required'],
+            'is_double' => ['required'],
+            'type_name' => ['required'],
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Edit Room Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+        }
+        return $this->baseReponse('T','Get Available Room Success!','', 200);
+    }
 }

@@ -43,6 +43,7 @@ Route::post('/seasons/delete', [App\Http\Controllers\SeasonController::class, 'd
 
 // Room
 Route::post('/rooms', [App\Http\Controllers\RoomController::class, 'index'])->middleware(['header','token']);
+Route::post('/rooms/avail', [App\Http\Controllers\RoomController::class, 'getAvail'])->middleware(['header','token']);
 Route::post('/rooms/create', [App\Http\Controllers\RoomController::class, 'store'])->middleware(['header','token']);
 Route::post('/rooms/edit', [App\Http\Controllers\RoomController::class, 'edit'])->middleware(['header','token']);
 Route::post('/rooms/delete', [App\Http\Controllers\RoomController::class, 'delete'])->middleware(['header','token']);
