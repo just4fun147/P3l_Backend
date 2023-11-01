@@ -39,6 +39,26 @@ class AuthController extends Controller
         $user = $t->tokenable;
         return $user;
     }
+
+    public function resetPass(Request $request){
+        $validate = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'full_name' => ['required'],
+            'phone_number' => ['required'],
+        ]);
+        $user = User::where('full_name','=',$request->full_name)
+                    ->where('phone_number','=',$request->phone_number)
+                    ->where('email','=',$request->email)
+                    ->get();
+        if($user->count()==0){
+            return $this->baseReponse('F',"Invalid",'',401);
+        }else{
+            $u= $user[0];
+            $u->password=bcrypt($u->identity);
+            $u->save();
+            return $this->baseReponse('T','Password Changed with Identity!','',200);
+        }
+    }
     public function login(Request $request){
         if(isset($request->user_agent)){
             $h = $request->user_agent;
@@ -76,6 +96,12 @@ class AuthController extends Controller
         if(Auth::attempt($credentials)){
             /** @var \App\Models\User $user **/
             $user = Auth::user();
+            if($getbrowser=="Mobile"){
+                if($user->role_id==6 || $user->role_id==4 || $user->role_id==2){
+                }else{
+                    return $this->baseReponse('F','Invalid Email/Password','',401);
+                }
+            }
             if($user->role_id==7){
                 $log = array(
                     'user_id' => '',

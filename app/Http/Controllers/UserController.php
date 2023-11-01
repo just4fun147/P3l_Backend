@@ -185,6 +185,18 @@ class UserController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $u = User::find($request->id);
+        $checkEmail = User::where('email','=',$request->email)->where('is_active','=',1)->where('role_id','=',$request->role)->get();
+        $checkName = User::where('full_name','=',$request->full_name)->where('is_active','=',1)->where('role_id','=',$request->role)->get();
+        if($u->role==6){
+            if($checkName->count()!=0){
+                $this->createLog(1,'Register Failed');
+                return $this->baseReponse('F',"Name already registered",'', 401);
+            }
+            if($checkEmail->count()!=0){
+                $this->createLog(1,'Register Failed');
+                return $this->baseReponse('F',"Email already registered",'', 401);
+            }
+        }
         if(!$u || $u->is_active==0){
             $this->createLog($user->id,'Failed edit user id: '.$request->id.' not found');
             return $this->baseReponse('F','Something Went Wrong','', 400);
@@ -216,28 +228,25 @@ class UserController extends Controller
     public function getUser(Request $request){
         $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
-            'id' => ['required', 'numeric'],
+            'id' => ['nullable', 'numeric'],
             'name' => ['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Failed Get User Invalid Request');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
-        $totalData = 0;
-        if($request->id!=0){
+        if($request->id){
             $users = User::where('id','=',$request->id)->where('is_active','=',1)->get();
             if($users->count()!=0){
-                $totalData = 1;
                 $this->createLog($user->id,'Get User with id : '.$request->id.' Success');
             }else{
                 $this->createLog($user->id,'Get User with id : '.$request->id.' Not Found');
             }
         }else{
-            $users = User::where('is_active','=',1)->where('full_name','like','%'.$request->name.'%')->get();
-            $totalData = $users->count();
+            $users = User::where('is_active','=',1)->where('full_name','like','%'.$request->name.'%')->where('role_id','=',6)->paginate(10);
             $this->createLog($user->id,'Get All User Success');
         }
-        return $this->baseReponse('T','Get User Success','', 200);
+        return $this->baseReponse('T','Get User Success',$users, 200);
     }
 
     public function delete(Request $request){
@@ -254,5 +263,10 @@ class UserController extends Controller
 
         $this->createLog($user->id,'Delete User with id : '.$request->id.' Success');
         return $this->baseReponse('T','Delete User Success','', 200);
+    }
+
+    public function index(Request $request){
+        $user = User::where('is_active','=',1)->where('role_id','=',6)->get();
+        return $this->baseReponse('T','Get User Success',$user, 200);
     }
 }

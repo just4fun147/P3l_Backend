@@ -50,6 +50,26 @@ class SeasonController extends Controller
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }if($request->id){
             $season = Season::where('id','=',$request->id)->where('is_active','=',1)->get();
+            $temp = SeasonDetail::join('mst_room_type','mst_room_type.id','=','mst_season_detail.room_type_id')
+                                    ->where('season_id',$season[0]->id)
+                                    ->select('type_name','mst_season_detail.price')
+                                    ->get()
+                                    ->unique('type_name');
+            $tempUnique = SeasonDetail::join('mst_room_type','mst_room_type.id','=','mst_season_detail.room_type_id')
+                                    ->where('season_id',$season[0]->id)
+                                    ->select('type_name','mst_season_detail.price')
+                                    ->get()
+                                    ->unique('price');
+            $data = Collect();
+            if($tempUnique->count()>1){
+                foreach($temp as $te){
+                    $data->push($te);
+                }
+                $season[0]->price = 0;
+            }else{
+                $season[0]->price = $tempUnique[0]->price; 
+            }
+            $season[0]->data = $data;
         }else{
             $season = Season::where('season_name','like','%'.$request->season_name.'%')->where('is_active','=',1)->paginate(10);
             $now = Carbon::now();
@@ -77,7 +97,7 @@ class SeasonController extends Controller
             'season_name' => ['required'],
             'capacity' => ['required', 'numeric'],
             'capacity_type' => ['required'],
-            'price' => ['required','numeric'],
+            'price' => ['nullable','numeric'],
             'price_type' => ['required','numeric'],
             'start_date' => ['required','date'],
             'end_date' => ['required','date'],
@@ -95,19 +115,36 @@ class SeasonController extends Controller
             $this->createLog($user->id,'Create Season Failed');
             return $this->baseReponse('F',"Invalid Capacity",'', 401);
         }
-        if($request->price<=0){
+        if($request->price<=0 && $request->capacity_type){
             $this->createLog($user->id,'Create Season Failed');
             return $this->baseReponse('F',"Invalid Price",'', 401);
         }
-        if($request->price_type=="1" && $request->price>100){
-            $this->createLog($user->id,'Create Season Failed');
-            return $this->baseReponse('F',"Invalid Discount Amount",'', 401);
+        $all = Season::all();
+        $temp = Carbon::parse($request->start_date);
+        $temp2 = Carbon::parse($request->end_date);
+        foreach($all as $al){
+            if($temp>=$al->start_date && $temp<=$al->end_date && $al->is_active){
+                $this->createLog($user->id,'Create Season Failed');
+                return $this->baseReponse('F',"Season Already Exist at That Date",'', 401);
+            }
+            if($temp2>=$al->start_date && $temp2<=$al->end_date && $al->is_active){
+                $this->createLog($user->id,'Create Season Failed');
+                return $this->baseReponse('F',"Season Already Exist at That Date",'', 401);
+            }
+            // if($temp>=$al->start_date && $temp2>=$al->end_date && $al->is_active){
+            //     $this->createLog($user->id,'Create Season Failed');
+            //     return $this->baseReponse('F',"Season Already Exist at That Date",'', 401);
+            // }
         }
         $now = Carbon::now();
-        $temp = Carbon::parse($request->start_date);
         if($temp->diffInMonths($now)<2){
             $this->createLog($user->id,'Create Season Failed');
             return $this->baseReponse('F',"The season starts in less than 2 months!",'', 401);
+        }
+        $find = Season::where('season_name','=',$request->season_name)->get();
+        if($find->count()!=0){
+            $this->createLog($user->id,'Create Season Failed');
+            return $this->baseReponse('F',"Season Already Exist!",'', 401);
         }
         $temp = array(
             'season_name' => $request->season_name,
@@ -120,14 +157,14 @@ class SeasonController extends Controller
         );
         $season = Season::create($temp);
         $this->createLog($user['id'],'Create Season : '.$season->id.'');
-        if($request->capacity_type){
+        if($request->apply_all){
             foreach($request->data as $d){
-                $type = RoomType::where('type_name','=',$d->type_name)->get();
+                $type = RoomType::where('type_name','=',$d['type_name'])->get();
                 foreach($type as $t){
                     $temps = array(
                         'season_id' => $season->id,
                         'room_type_id'=> $t->id,
-                        'price' => $d->price,
+                        'price' => $request->price,
                         'is_active'=>1,
                         'created_by' => $user->full_name
                         
@@ -137,12 +174,12 @@ class SeasonController extends Controller
             }
         }else{
             foreach($request->data as $d){
-                $type = RoomType::get();
+                $type = RoomType::where('type_name','=',$d['type_name'])->get();
                 foreach($type as $t){
                     $temps = array(
                         'season_id' => $season->id,
                         'room_type_id'=> $t->id,
-                        'price' => $request->price,
+                        'price' => $d['price'],
                         'is_active'=>1,
                         'created_by' => $user->full_name
                     );
@@ -176,13 +213,15 @@ class SeasonController extends Controller
     public function edit(Request $request){
         $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
-            'id' => ['required'],
+            'id' =>['required'],
             'season_name' => ['required'],
-            'capacity' => ['required'],
-            'price' => ['required'],
-            'price_type' => ['required'],
+            'capacity' => ['required', 'numeric'],
+            'capacity_type' => ['required'],
+            'price' => ['nullable','numeric'],
+            'price_type' => ['required','numeric'],
             'start_date' => ['required','date'],
-            'end_date' => ['required','date']
+            'end_date' => ['required','date'],
+            'data' => ['nullable']
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Edit Season Failed');
@@ -199,12 +238,31 @@ class SeasonController extends Controller
         }
         $season->season_name = $request->season_name;
         $season->capacity = $request->capacity;
-        $season->price = $request->price;
         $season->price_type = $request->price_type;
-        $season->start_date = $request->start_date;
-        $season->end_date = $request->end_date;        
+        $season->start_date = Carbon::parse($request->start_date);
+        $season->end_date = Carbon::parse($request->end_date);        
         $season->updated_by = $user->full_name;
         $season->save();
+        if($request->apply_all){
+            foreach($request->data as $d){
+                $type = SeasonDetail::where('season_id','=',$season->id)->get();
+                foreach($type as $t){
+                    $t->price = $request->price;
+                    $t->save();
+                }
+            }
+        }else{
+            foreach($request->data as $d){
+                $types = SeasonDetail::join('mst_room_type','mst_room_type.id','=','mst_season_detail.room_type_id')
+                                    ->where('mst_season_detail.season_id','=',$request->id)->get();
+                foreach($types as $te){
+                    if($te->type_name == $d['type_name']){
+                        $te->price = intval($d['price']);
+                        $te->save();
+                    }
+                }
+            }
+        }
         $this->createLog($user['id'],'Edit Season : '.$season->id.'');
         return $this->baseReponse('T','Edit Season Success!','', 200);
     }

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Room;
+use App\Models\Reservation;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 
 class RoomController extends Controller
 {
@@ -302,13 +303,30 @@ class RoomController extends Controller
         $validate = Validator::make($request->all(), [
             'start_date' => ['required'],
             'end_date' => ['required'],
-            'is_double' => ['required'],
-            'type_name' => ['required'],
+            'adult' => ['required'],
+            'child' => ['required'],
         ]);
         if($validate->fails()){
             $this->createLog($user->id,'Edit Room Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
-        return $this->baseReponse('T','Get Available Room Success!','', 200);
+        $type = RoomType::select('type_name','uuid','price')->where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get()->unique('type_name');
+        $dateS = Carbon::parse($request->start_date);
+        $dateE = Carbon::parse($request->end_date);
+        $res = Collect();
+        foreach($type as $t){
+            $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
+                            ->where('type_name','=',$t->type_name)
+                            ->get();
+            $booked = Reservation::join('trn_detail_reservation','trn_detail_reservation.reservation_id','=','trn_reservation.id')
+                                        ->join('mst_room','mst_room.id','=','trn_detail_reservation.room_id')
+                                        ->join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
+                                        ->whereBetween('trn_reservation.start_date',[$dateS->format('Y-m-d'), $dateE->format('Y-m-d')])
+                                        ->where('type_name','=',$t->type_name)
+                                        ->get();
+            $t->total = $room->count()-$booked->count();
+            $res->push($t);
+        }
+        return $this->baseReponse('T','Get Available Room Success!',$res, 200);
     }
 }

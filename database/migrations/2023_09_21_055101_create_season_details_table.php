@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mst_season_detail', function (Blueprint $table) {
-            $table->id();
+            $table->id('id');
             $table->foreignId('season_id')->references('id')->on('mst_season');
             $table->foreignId('room_type_id')->references('id')->on('mst_room_type');
             $table->double('price',20,0);

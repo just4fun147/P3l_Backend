@@ -32,6 +32,7 @@ Route::post('/changePassword', [App\Http\Controllers\AuthController::class, 'cha
 
 // USER
 Route::post('/users', [App\Http\Controllers\UserController::class, 'getUser'])->middleware(['header','token']);
+Route::post('/users/reset', [App\Http\Controllers\AuthController::class, 'resetPass'])->middleware(['header']);
 Route::post('/users/delete', [App\Http\Controllers\UserController::class, 'delete'])->middleware(['header','token']);
 Route::post('/users/edit', [App\Http\Controllers\UserController::class, 'edit'])->middleware(['header','token']);
 
