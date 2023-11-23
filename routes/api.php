@@ -44,7 +44,7 @@ Route::post('/seasons/delete', [App\Http\Controllers\SeasonController::class, 'd
 
 // Room
 Route::post('/rooms', [App\Http\Controllers\RoomController::class, 'index'])->middleware(['header','token']);
-Route::post('/rooms/avail', [App\Http\Controllers\RoomController::class, 'getAvail'])->middleware(['header','token']);
+Route::post('/rooms/avail', [App\Http\Controllers\RoomController::class, 'getAvail'])->middleware(['header']);
 Route::post('/rooms/create', [App\Http\Controllers\RoomController::class, 'store'])->middleware(['header','token']);
 Route::post('/rooms/edit', [App\Http\Controllers\RoomController::class, 'edit'])->middleware(['header','token']);
 Route::post('/rooms/delete', [App\Http\Controllers\RoomController::class, 'delete'])->middleware(['header','token']);
@@ -63,6 +63,7 @@ Route::post('/coupons/delete', [App\Http\Controllers\CouponController::class, 'd
 
 // Add On
 Route::post('/add-on', [App\Http\Controllers\AddonController::class, 'index'])->middleware(['header','token']);
+Route::post('/add-on/all', [App\Http\Controllers\AddonController::class, 'all'])->middleware(['header','token']);
 Route::post('/add-on/create', [App\Http\Controllers\AddonController::class, 'store'])->middleware(['header','token']);
 Route::post('/add-on/edit', [App\Http\Controllers\AddonController::class, 'edit'])->middleware(['header','token']);
 Route::post('/add-on/delete', [App\Http\Controllers\AddonController::class, 'delete'])->middleware(['header','token']);
@@ -76,7 +77,10 @@ Route::post('/report/new-customer', [App\Http\Controllers\ReportController::clas
 Route::post('/report/loyal-customer', [App\Http\Controllers\ReportController::class, 'loyalCustomer'])->middleware(['header','token']);
 
 // Reservation
-Route::post('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->middleware(['header','token']);
+Route::post('/reservation', [App\Http\Controllers\ReservationController::class, 'index']);
+Route::post('/reservation/confirm', [App\Http\Controllers\ReservationController::class, 'confirm'])->middleware(['header','token']);
 Route::post('/reservation/cancel', [App\Http\Controllers\ReservationController::class, 'cancelReservation'])->middleware(['header','token']);
+Route::post('/reservation/create/p', [App\Http\Controllers\ReservationController::class, 'personal'])->middleware(['header','token']);
+Route::post('/reservation/create/g', [App\Http\Controllers\ReservationController::class, 'group'])->middleware(['header','token']);
 
 

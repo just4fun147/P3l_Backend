@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('invoice_number')->nullable()->unique();
             $table->string('id_booking')->unique();
             $table->foreignId('user_id')->references('id')->on('mst_user');
+            $table->date('paid_at')->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('adult');

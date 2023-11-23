@@ -54,6 +54,33 @@ class AddonController extends Controller
             $this->createLog($user->id,'Get Add On Failed');
             return $this->baseReponse('F','Data Not Found','', 404);
         }
+        foreach($addon as $a){
+            $a->total=0;
+        }
+        $this->createLog($user->id,'Get Add On Success');
+            return $this->baseReponse('T','Get Add On Success',$addon, 200);
+
+    }
+
+    public function all(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'id' => ['nullable'],
+            'add_on_name' => ['nullable']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Get Add On Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 401);
+        }
+        
+        $addon = Addon::select('id','add_on_name','price')->get();
+        foreach($addon as $a){
+            $a->total = 0;
+        };
+        if($addon->count()==0){
+            $this->createLog($user->id,'Get Add On Failed');
+            return $this->baseReponse('F','Data Not Found','', 404);
+        }
         $this->createLog($user->id,'Get Add On Success');
             return $this->baseReponse('T','Get Add On Success',$addon, 200);
 

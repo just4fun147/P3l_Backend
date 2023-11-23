@@ -20,11 +20,13 @@ class Reservation extends Model
     protected $fillable = [
         'id',
         'invoice_number',
+        'id_booking',
         'user_id',
         'start_date',
         'end_date',
         'adult',
         'child',
+        'paid_at',
         'is_paid',
         'end_paid',
         'is_extend',

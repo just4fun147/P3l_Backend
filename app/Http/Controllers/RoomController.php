@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Models\Room;
 use App\Models\Reservation;
+use App\Models\SeasonDetail;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -299,18 +300,29 @@ class RoomController extends Controller
     }
 
     public function getAvail(Request $request){
-        $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
+            'id' => ['nullable'],
+            'night' => ['nullable'],
             'start_date' => ['required'],
             'end_date' => ['required'],
             'adult' => ['required'],
             'child' => ['required'],
         ]);
         if($validate->fails()){
-            $this->createLog($user->id,'Edit Room Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 401);
         }
-        $type = RoomType::select('type_name','uuid','price')->where('type_name','like','%'.$request->type_name.'%')->where('is_active','=',1)->get()->unique('type_name');
+        if($request->id){
+            $type = RoomType::select('type_name','uuid','price')
+                            ->where('is_active','=',1)
+                            ->where('uuid','=',$request->id)
+                            ->get()
+                            ->unique('type_name');
+        }else{
+            $type = RoomType::select('type_name','uuid','price')
+                            ->where('is_active','=',1)
+                            ->get()
+                            ->unique('type_name');
+        }
         $dateS = Carbon::parse($request->start_date);
         $dateE = Carbon::parse($request->end_date);
         $res = Collect();
@@ -318,13 +330,49 @@ class RoomController extends Controller
             $room = Room::join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
                             ->where('type_name','=',$t->type_name)
                             ->get();
+            $season = SeasonDetail::join('mst_season','mst_season.id','=','mst_season_detail.season_id')
+                                    ->join('mst_room_type','mst_room_type.id','=','mst_season_detail.room_type_id')
+                                    ->where('mst_room_type.type_name','=',$t->type_name)
+                                    ->whereDate('mst_season.start_date','<=',$dateS->format('Y-m-d'))
+                                    ->whereDate('mst_season.end_date','>=', $dateE->format('Y-m-d'))
+                                    ->where('mst_season.is_active','=',1)
+                                    ->limit(1)
+                                    ->select('mst_season.price_type','mst_season_detail.price')
+                                    ->get();
             $booked = Reservation::join('trn_detail_reservation','trn_detail_reservation.reservation_id','=','trn_reservation.id')
                                         ->join('mst_room','mst_room.id','=','trn_detail_reservation.room_id')
                                         ->join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
                                         ->whereBetween('trn_reservation.start_date',[$dateS->format('Y-m-d'), $dateE->format('Y-m-d')])
                                         ->where('type_name','=',$t->type_name)
                                         ->get();
-            $t->total = $room->count()-$booked->count();
+            // $t->total = $room->count() - $booked->count();
+
+            if($season->count()!=0){
+                $t->normal_price = $t->price;
+                if($season[0]->price_type==1){
+                    $dc = $t->price * $season[0]->price;
+                    $t->price = $t->price - $dc;
+                }else if($season[0]->price_type==2){
+                    $t->price = $t->price - $season[0]->price;
+                }else if($season[0]->price_type == 3){
+                    $t->price = $season[0]->price;
+                }
+            }else{
+                $t->normal_price = 0;
+            }
+
+            if($request->id){
+                $t->total = $t->price * $request->night;
+                $t->night = $request->night;
+                $t->start_date = $request->start_date;
+                $t->end_date = $request->end_date;
+                $t->adult = $request->child;
+                $t->child = $request->adult;
+            }else{
+                $t->total = $room->count() - $booked->count();
+                $t->price= "Rp ".number_format($t->price);
+            }
+            $t->qty = 0;            
             $res->push($t);
         }
         return $this->baseReponse('T','Get Available Room Success!',$res, 200);

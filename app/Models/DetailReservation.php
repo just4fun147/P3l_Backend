@@ -23,6 +23,7 @@ class DetailReservation extends Model
         'room_id',
         'coupon_id',
         'actual_price',
+        'normal_price',
         'season_id',
         'is_active',
         'created_by',
