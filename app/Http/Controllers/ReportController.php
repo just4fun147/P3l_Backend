@@ -213,7 +213,10 @@ class ReportController extends Controller
         $temp = collect();
         $totalAll = 0;
         for($m=1;$m<13;$m++){
-            $reservation = User::whereYear('created_at','=',$request->year)->whereMonth('created_at','=',$m)->count();
+            $reservation = User::whereYear('created_at','=',$request->year)
+                                ->whereMonth('created_at','=',$m)
+                                ->where('role_id','=',6)
+                                ->count();
             $month=$this->getMonth($m);
             $totalAll = $totalAll + $reservation;
             $t = array(
@@ -258,15 +261,17 @@ class ReportController extends Controller
                                         ->get();
             $total = 0;
             $price = 0;
+            $total = Reservation::whereYear('trn_reservation.start_date','=',$request->year)
+                                    ->where('trn_reservation.user_id','=',$u->user_id)
+                                    ->get();
             foreach($reservation as $r){
-                $total++;
                 $price = $price + $r->actual_price;
             }
             $name = User::find($u->user_id);
             $temp = array(
                 'no' => $c,
                 'name' => $name->full_name,
-                'total' => $total,
+                'total' => $total->count(),
                 'price' => "Rp ".number_format($price)
             );
             $totalAll = $totalAll+$price;
