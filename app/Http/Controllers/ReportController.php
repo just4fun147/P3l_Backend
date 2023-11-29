@@ -41,12 +41,10 @@ class ReportController extends Controller
         return $user;
     }
     public function monthly(Request $request){
-        $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
             'year' => ['required']
         ]);
         if($validate->fails()){
-            $this->createLog($user->id,'Generate Monthly Report Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $temp = collect();
@@ -94,9 +92,72 @@ class ReportController extends Controller
         return $this->baseReponse('T',"Get Report Success",$res, 200);
     }
 
+    public function monthlyChart(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'year' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Generate Monthly Report Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $temp = collect();
+        $label = collect();
+        $totalAll = 0;
+        for($m=1;$m<13;$m++){
+            $reservation = DetailReservation::join('trn_reservation','trn_reservation.id','=','trn_detail_reservation.reservation_id')
+                                ->join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                ->whereYear('trn_reservation.start_date','=', $request->year)
+                                ->whereMonth('trn_reservation.start_date','=', $m)
+                                ->get();
+            $grup = 0;
+            $personal = 0;
+            $month=$this->getMonth($m);
+            $label->push($month);
+            foreach($reservation as $r){
+                if($r->role_id==6){
+                    $personal = $personal+$r->actual_price;
+                }
+                if($r->role_id==7){
+                    $grup = $grup+$r->actual_price;
+                }
+            }
+            $total = $personal + $grup;
+            $totalAll = $totalAll+$total;
+            $temp->push($total);
+        }
+        $dataSet=collect();
+        $set = array(
+            'label' => 'Pendapatan Bulanan',
+            'data' => $temp,
+            'backgroundColor' => 'rgba(255, 0, 0, 0.5)'
+        );
+        $dataSet->push($set);
+        $chart = array(
+            'labels' => $label,
+            'datasets' => $dataSet
+        );
+        $dtTemp = Carbon::now();
+        $dt = $dtTemp->day ." " .$this->getMonth($dtTemp->month)." ".$request->year;
+        $res = array(
+            'year'=> $request->year,
+            'today' => $dt,
+            'data' => $chart
+        );
+        return $this->baseReponse('T',"Get Report Success",$res, 200);
+    }
+
     public function getAvailYear(Request $request){
         $year = Reservation::select(DB::raw('YEAR(start_date) as year'))->distinct()->get();
         return $this->baseReponse('T',"Get Year Success",$year, 200);
+    }
+    public function getAvailYearMobile(Request $request){
+        $year = Reservation::select(DB::raw('YEAR(start_date) as year'))->distinct()->get();
+        $res = collect();
+        foreach($year as $y){
+            $res->push(strval($y->year));
+        }
+        return $this->baseReponse('T',"Get Year Success",$res, 200);
     }
     public function getAvailYearUser(Request $request){
         $year = User::select(DB::raw('YEAR(created_at) as year'))->distinct()->get();
@@ -201,13 +262,95 @@ class ReportController extends Controller
 
     }
 
-    public function newCust(Request $request){
+    public function getGuestPerMonthChart(Request $request){
         $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'year' => ['required'],
+            'month' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Generate Guest Report Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $res = collect();
+        $totals = collect();
+        $c=1;
+        $label =collect();
+        $i = 0;
+        $person = collect();
+        $grp = collect();
+        $room_type = RoomType::select('type_name')->distinct('type_name')->get();
+        foreach($room_type as $t){
+            $label->push($t->type_name);
+            $reservation = DetailReservation::join('trn_reservation','trn_reservation.id','=','trn_detail_reservation.reservation_id')
+                            ->join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                            ->join('mst_room','mst_room.id','=','trn_detail_reservation.room_id')
+                            ->join('mst_room_type','mst_room_type.id','=','mst_room.type_id')
+                            ->whereYear('trn_reservation.start_date','=', $request->year)
+                            ->whereMonth('trn_reservation.start_date','=', $request->month)
+                            ->where('mst_room_type.type_name','like','%'.$t->type_name.'%')
+                            ->get();
+            $persoTemp = 0;
+            $grpTemp = 0;
+            $totalsTemp = 0;
+            foreach($reservation as $r){
+                
+                foreach($label as $l){
+                    if($l == $t->type_name){
+                        if($r->role_id==6){
+                            $persoTemp++;
+                        }
+                        if($r->role_id==7){
+                            $grpTemp++;
+                        }
+                    }
+                    $totalsTemp++;
+                }
+            }
+            $person->push($persoTemp);
+            $grp->push($grpTemp);
+            $totals->push($totalsTemp);
+        }
+        $groupDataSet = array(
+            'label' => 'Group',
+            'data' => $grp,
+            'backgroundColor' => 'rgba(255, 0, 0, 0.5)'
+        );
+        $persnalDataSet = array(
+            'label' => 'Personal',
+            'data' => $person,
+            'backgroundColor' => 'rgba(255, 99, 132, 0.5)'
+        );
+        $totalDataSet = array(
+            'label' => 'Total',
+            'data' => $totals,
+            'backgroundColor' => 'rgba(0, 255, 0, 0.5)'
+        );
+        $dataSet = collect();
+        $dataSet->push($groupDataSet);
+        $dataSet->push($persnalDataSet);
+        $dataSet->push($totalDataSet);
+        $chart = array(
+            'labels' => $label,
+            'datasets' => $dataSet
+        );
+        $dtTemp = Carbon::now();
+        $dt = $dtTemp->day ." " .$this->getMonth($dtTemp->month)." ".$request->year;
+        $result = array(
+            'today' => $dt,
+            'year' => $request->year,
+            'month' => $this->getMonth($request->month),
+            'data' => $chart
+        );
+        return $this->baseReponse('T',"Get Report Success",$result, 200);
+
+    }
+
+    public function newCust(Request $request){
         $validate = Validator::make($request->all(), [
             'year' => ['required']
         ]);
         if($validate->fails()){
-            $this->createLog($user->id,'Generate New Customer Report Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $temp = collect();
@@ -238,12 +381,10 @@ class ReportController extends Controller
     }
 
     public function loyalCustomer(Request $request){
-        $user = $this->checkToken($request->bearerToken());
         $validate = Validator::make($request->all(), [
             'year' => ['required']
         ]);
         if($validate->fails()){
-            $this->createLog($user->id,'Generate Loyal Customer Report Failed');
             return $this->baseReponse('F',$validate->errors()->first(),'', 400);
         }
         $collect = collect();

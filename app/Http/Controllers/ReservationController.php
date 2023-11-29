@@ -60,6 +60,202 @@ class ReservationController extends Controller
         Mail::to($email)->send(new Receipt($body));
     }
 
+    public function FO(request $request){
+        $validate = Validator::make($request->all(), [
+            'search' => ['nullable'],
+            'is_group' => ['required'],
+            'check_in' => ['required'],
+            'is_open' => ['required']
+        ]);
+        if($validate->fails()){
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $s = $request->search;
+        $now = Carbon::now();
+
+        if($request->is_group){
+            if(!$request->is_open){
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                        ->join('mst_group','mst_group.user_id','=','mst_user.id')
+                                        ->where(function ($query) use($s){
+                                                $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                    ->orWhere('mst_group.group_name','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                        })
+                                        ->where('mst_user.role_id','=',7)
+                                        ->whereNotNull('trn_reservation.check_in')
+                                        ->whereNotNull('trn_reservation.check_out')
+                                        ->where('trn_reservation.is_paid','=',1)
+                                        ->select('trn_reservation.*', 'mst_user.full_name','mst_group.group_name','mst_group.pic_id')
+                                        ->orderBy('trn_reservation.start_date', 'DESC')
+                                        ->paginate(10);
+            }
+            else if($request->check_in){
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                        ->join('mst_group','mst_group.user_id','=','mst_user.id')
+                                        ->where(function ($query) use($s){
+                                                $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                    ->orWhere('mst_group.group_name','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                        })
+                                        ->where('mst_user.role_id','=',7)
+                                        ->where('trn_reservation.is_active','=',$request->is_open)
+                                        ->whereNull('trn_reservation.check_in')
+                                        ->where('trn_reservation.is_paid','=',1)
+                                        ->whereDate('trn_reservation.start_date','=',$now)
+                                        ->select('trn_reservation.*', 'mst_user.full_name','mst_group.group_name','mst_group.pic_id')
+                                        ->orderBy('trn_reservation.start_date', 'DESC')
+                                        ->paginate(10);
+            }else{
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                        ->join('mst_group','mst_group.user_id','=','mst_user.id')
+                                        ->where(function ($query) use($s){
+                                                $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                    ->orWhere('mst_group.group_name','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                        })
+                                        ->where('mst_user.role_id','=',7)
+                                        ->where('trn_reservation.is_active','=',$request->is_open)
+                                        ->whereNotNull('trn_reservation.check_in')
+                                        ->whereNull('trn_reservation.check_out')
+                                        ->where('trn_reservation.is_paid','=',1)
+                                        ->select('trn_reservation.*', 'mst_user.full_name','mst_group.group_name','mst_group.pic_id')
+                                        ->orderBy('trn_reservation.start_date', 'DESC')
+                                        ->paginate(10);
+            }
+        }else{
+            if(!$request->is_open){
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                        ->where(function ($query) use($s){
+                                            $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                        })
+                                        ->where('mst_user.role_id','=',6)
+                                        ->where('trn_reservation.is_paid','=',1)
+                                        ->whereNotNull('trn_reservation.check_in')
+                                        ->whereNotNull('trn_reservation.check_out')
+                                        ->select('trn_reservation.*', 'mst_user.full_name','mst_user.address')
+                                        ->orderBy('trn_reservation.start_date', 'DESC')
+                                        ->paginate(10);
+            }
+            else if($request->check_in){
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                            ->where(function ($query) use($s){
+                                                $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                            })
+                                            ->where('mst_user.role_id','=',6)
+                                            ->where('trn_reservation.is_paid','=',1)
+                                            ->where('trn_reservation.is_active','=',$request->is_open)
+                                            ->whereNull('trn_reservation.check_in')
+                                            ->whereDate('trn_reservation.start_date','=',$now)
+                                            ->select('trn_reservation.*', 'mst_user.full_name','mst_user.address')
+                                            ->orderBy('trn_reservation.start_date', 'DESC')
+                                            ->paginate(10);
+            }else{
+                $reservation = Reservation::join('mst_user','mst_user.id','=','trn_reservation.user_id')
+                                            ->where(function ($query) use($s){
+                                                $query->where('mst_user.full_name','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.invoice_number','like','%'.$s.'%')
+                                                    ->orWhere('trn_reservation.id_booking','like','%'.$s.'%');
+                                            })
+                                            ->where('mst_user.role_id','=',6)
+                                            ->where('trn_reservation.is_paid','=',1)
+                                            ->where('trn_reservation.is_active','=',$request->is_open)
+                                            ->whereNotNull('trn_reservation.check_in')
+                                            ->whereNull('trn_reservation.check_out')
+                                            ->select('trn_reservation.*', 'mst_user.full_name','mst_user.address')
+                                            ->orderBy('trn_reservation.start_date', 'DESC')
+                                            ->paginate(10);
+            }
+        }
+        $no = 0;
+        foreach($reservation as $r){
+            $no++;
+            $r->no = $no;
+            $start = Carbon::parse($r->start_date);
+            if($r->is_active==0){
+                $r->in = 0;
+                $r->out = 0;
+                $r->facility = 0;
+            }else{
+                if($now->hour>=14 && $r->check_in==null){
+                    $r->in = 1;
+                    $r->out = 0;
+                    $r->facility = 0;
+                }
+                if($r->check_in!=null && $r->check_out==null){
+                    $r->in = 0;
+                    $r->out = 1;
+                    $r->facility = 1;
+                }
+                if($r->check_in!=null && $r->check_out!=null){
+                    $r->in = 0;
+                    $r->out = 0;
+                    $r->facility = 0;
+                }
+                if($now->hour<14 && $r->check_in==null){
+                    $r->in = -1;
+                    $r->out = 0;
+                    $r->facility = 0;
+                }
+
+            }
+            $addon = Facility::join('mst_add_on','mst_add_on.id','=','trn_add_on.add_on_id')
+                            ->where('is_charge','=',1)
+                            ->where('reservation_id','=',$r->id)
+                            ->get();
+            if($request->is_open){
+                $total=300000;
+                foreach($addon as $a){
+                    $total = $total-($a->price*$a->quantity);
+                }
+                $r->depo = "Rp ".number_format($total);
+            }
+        }
+        return $this->baseReponse('T','Get Reservation Success',$reservation, 200);
+
+    }
+
+    public function checkIn(Request $request){
+        $validate = Validator::make($request->all(), [
+            'id' => ['required']
+        ]);
+        if($validate->fails()){
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $now = Carbon::now();
+        $res = Reservation::find($request->id);
+        $res->check_in = $now;
+        $res->save();
+        return $this->baseReponse('T','Check In Success','', 200);
+    }
+    public function checkOut(Request $request){
+        $validate = Validator::make($request->all(), [
+            'id' => ['required']
+        ]);
+        if($validate->fails()){
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $now = Carbon::now();
+        $count = Reservation::whereDate("end_date",'=',$now->format('Y-m-d'))->whereNotNull('check_out')->count();
+        $res = Reservation::find($request->id);
+        $u = User::find($res->user_id);
+        if($u->role_id==6){
+            $id_book = "P".$now->day.$now->month.substr($now->year,2)."-".str_pad($count+1, 3, '0', STR_PAD_LEFT);
+        }else{
+            $id_book = "G".$now->day.$now->month.substr($now->year,2)."-".str_pad($count+1, 3, '0', STR_PAD_LEFT);
+        }
+        $res->check_out = $now;
+        $res->invoice_number = $id_book;
+        $res->save();
+        return $this->baseReponse('T','Check Out Success','', 200);
+    }
     public function index(Request $request){
         $validate = Validator::make($request->all(), [
             'id' => ['nullable'],
@@ -583,5 +779,138 @@ class ReservationController extends Controller
         $reservation->save();
         $this->createLog($user->id,'Confirm Reservation Success');
         return $this->baseReponse('T','Confirm Reservation Success','', 200);
+    }
+
+    public function receipt(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'id' => ['required'],
+            'is_group' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Cancel Reservation Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        $reservation = Reservation::find($request->id);
+        $u = User::find($reservation->user_id);
+        $n = Carbon::now();
+        $m = $n->format('F');
+        $reservation->now = $n->day.'/'.substr($m,0,3).'/'.$n->year;
+        $n = Carbon::parse($reservation->check_in);
+        $m = $n->format('F');
+        $reservation->check_in = $n->day.'/'.substr($m,0,3).'/'.$n->year;
+        $n = Carbon::parse($reservation->check_out);
+        $m = $n->format('F');
+        $reservation->check_out = $n->day.'/'.substr($m,0,3).'/'.$n->year;
+        $reservation->name = $u->full_name;
+        $reservation->address = $u->address;
+
+        $detail = DetailReservation::join('mst_room','mst_room.id','=','trn_detail_reservation.room_id')
+                                    ->join('mst_room_type','mst_room.type_id','=','mst_room_type.id')
+                                    ->where('reservation_id','=',$reservation->id)->get();
+        $room = RoomType::select('type_name')->where('is_active','=',1)->get()->unique('type_name');
+        $summary = Collect();
+        $total_price = 0;
+        foreach($room as $r){
+            $total = 0;
+            $price = 0;
+            foreach($detail as $d){
+                if($r->type_name==$d->type_name){
+                    $total++;
+                    $price = $price + $d->actual_price;
+                }
+                if($d->is_double){
+                    $d->is_double = "Double";
+                }else{
+                    $d->is_double = "Twin";
+                }
+            }
+            if($total!=0){
+                $r->total = $total;
+                $r->price = $price;
+                $r->bed = $d->is_double;
+                $r->actual_price = "Rp ".number_format($d->actual_price);
+                $total_price = $total_price + $price;
+                $r->price = "Rp ".number_format($price);
+                $summary->push($r);
+            }
+        }
+        $reservation->summary = $summary;
+        $reservation->totalRoom = "Rp ".number_format($total_price);
+
+
+        $facility = Facility::join('mst_add_on','mst_add_on.id','=','trn_add_on.add_on_id')
+                                ->where('trn_add_on.reservation_id','=',$reservation->id)
+                                ->where('trn_add_on.is_active','=',1)
+                                ->get();
+        $addOn = AddOn::all();
+        $addCol = Collect();
+        $start = Carbon::parse($reservation->start_date);
+        $end = Carbon::parse($reservation->end_date);
+        $diff = $start->diffInDays($end);
+        $price = 0;
+        foreach($addOn as $ao){
+            foreach($facility as $f){
+                if($f->add_on_name == $ao->add_on_name){
+                    $n = Carbon::parse($f->created_at);
+                    $m = $n->format('F');
+                    
+                    $temp = array(
+                        'add_on_name'=>$ao->add_on_name, 
+                        'price' =>"Rp ". number_format($ao->price),
+                        'subTotal' => "Rp ".number_format($ao->price*$f->quantity), 
+                        'total'=>$f->quantity, 
+                        'date'=>$n->day.'/'.substr($m,0,3).'/'.$n->year);
+                    $addCol->push($temp);
+                    $price = $price + $ao->price*$f->quantity;
+                }
+            }
+        }
+        $reservation->addon = $addCol;
+        $reservation->totalAddOn = "Rp ". number_format($price) ;
+        $reservation->grandTotal = "Rp ". number_format($total_price + $price);
+        $reservation->tax = "Rp ". number_format(($total_price + $price)*0.1);
+
+        $charge = Facility::join('mst_add_on','mst_add_on.id','=','trn_add_on.add_on_id')
+                            ->where('is_charge','=',1)
+                            ->where('reservation_id','=',$reservation->id)
+                            ->get();
+        $depo=0;
+        foreach($charge as $a){
+            $depo = $depo + ($a->price*$a->quantity);
+        }
+        $depo = $depo-300000;
+        
+        $reservation->cash = "Rp ".number_format($depo);
+        
+        return $this->baseReponse('T','Get Receipt Success',$reservation, 200);
+
+    }
+
+    public function addFacilityFO(Request $request){
+        $user = $this->checkToken($request->bearerToken());
+        $validate = Validator::make($request->all(), [
+            'id' => ['required'],
+            'add_on' => ['required']
+        ]);
+        if($validate->fails()){
+            $this->createLog($user->id,'Cancel Reservation Failed');
+            return $this->baseReponse('F',$validate->errors()->first(),'', 400);
+        }
+        foreach($request->add_on as $adn){
+            if($adn['total']>0){
+                $tempAddON = array(
+                  'reservation_id' =>$request->id,
+                  'add_on_id' =>$adn['id'],
+                  'is_charge' => true,
+                  'quantity' => $adn['total'],
+                  'is_active' => true,
+                  'created_by' => $user->full_name  
+                );
+                Facility::create($tempAddON);
+            };
+        }
+        return $this->baseReponse('T','Add Facility Success','', 200);
+
     }
 }

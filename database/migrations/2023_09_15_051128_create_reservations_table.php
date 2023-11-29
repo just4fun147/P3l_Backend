@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('paid_at')->nullable();
             $table->date('start_date');
             $table->date('end_date');
+            $table->date('check_in')->nullable();
+            $table->date('check_out')->nullable();
             $table->integer('adult');
             $table->integer('child');
             $table->boolean('is_paid');

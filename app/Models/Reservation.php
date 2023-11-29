@@ -24,6 +24,8 @@ class Reservation extends Model
         'user_id',
         'start_date',
         'end_date',
+        'check_in',
+        'check_out',
         'adult',
         'child',
         'paid_at',
